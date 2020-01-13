@@ -1,0 +1,70 @@
+# The Module Name is used as prefix for all contained resources.
+Module: Smylee.PlaylistMonitor
+
+# The Module Version is shown in the CloudFormation stack and Lambda function descriptions.
+Version: 1.0-DEV
+
+# The Module Description is shown in the AWS CloudFormation console with the version number.
+Description: Module description
+
+Secrets:
+  - alias/SmyleeDev
+
+# The Items section defines values and resources for the module.
+Items:
+
+  - Parameter: YouTubeApiKey
+    Default: AQICAHgV4F7JD1DwChzJANB4z5wxEXhp9LlpCHm1HLFM2FhScgFlqlohKyOECrKQPTGxJf7BAAAAhjCBgwYJKoZIhvcNAQcGoHYwdAIBADBvBgkqhkiG9w0BBwEwHgYJYIZIAWUDBAEuMBEEDC3TY6Nz/TUTBBAKDwIBEIBCUa+0jeEjHpA/NCd8WTdX7ExAhwVXDp5lN6lsIJulxSb0ABUUgxYx9KeQECrrEaHHQRk7d99FJW4xLyedkPMLm74f
+    Type: Secret
+    Scope: PlaylistMonitor
+
+  - Resource: SesSendEmail
+    Description: Permissions required for sending email via ses
+    Value: "*"
+    Allow:
+      - "ses:SendEmail"
+    Scope: PlaylistMonitor
+
+  - Function: PlaylistMonitor
+    Memory: 256
+    Timeout: 60
+    Sources:
+      - Schedule: cron(25 20 * * ? *)
+
+  - Resource: UserPlaylist
+    Description: DynamoDb table to store current playlist
+    Type: AWS::DynamoDB::Table
+    Allow: ReadWrite
+    Scope:
+      - all
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: email
+          AttributeType: S
+        - AttributeName: playlistId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: email
+          KeyType: HASH
+        - AttributeName: playlistId
+          KeyType: RANGE
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+
+  - Resource: UserSubscriptions
+    Description: DynamoDb table to store subscriptions to monitor
+    Type: AWS::DynamoDB::Table
+    Allow: ReadWrite
+    Scope:
+      - all
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: email
+          AttributeType: S
+      KeySchema:
+        - AttributeName: email
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
