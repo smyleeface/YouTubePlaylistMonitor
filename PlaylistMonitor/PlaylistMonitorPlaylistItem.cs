@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Smylee.PlaylistMonitor.PlaylistMonitor {
 
-    public class PlaylistItem {
+    public class PlaylistMonitorPlaylistItem {
         [JsonProperty("id")]
         public string Id;
         

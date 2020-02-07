@@ -1,9 +1,9 @@
-using System.ComponentModel;
 using Newtonsoft.Json;
 
 namespace Smylee.PlaylistMonitor.PlaylistMonitor {
 
-    public class Subscription {
+    public class PlaylistMonitorSubscription {
+
         [JsonProperty("userName")]
         public string UserName;
         

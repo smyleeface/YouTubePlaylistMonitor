@@ -1,9 +1,7 @@
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.Lambda.Core;
-using Amazon.SimpleEmailV2;
-using Google.Apis.Services;
-using Google.Apis.YouTube.v3;
+using Amazon.SimpleNotificationService;
 using LambdaSharp;
 using LambdaSharp.Schedule;
 
@@ -20,22 +18,15 @@ namespace Smylee.PlaylistMonitor.PlaylistMonitor {
         //--- Methods ---
         public override async Task InitializeAsync(LambdaConfig config) {
             var dynamoDbUserSubscriptionTableName = AwsConverters.ConvertDynamoDBArnToName(config.ReadText("UserSubscriptions"));
-            var dynamoDbTableName = AwsConverters.ConvertDynamoDBArnToName(config.ReadText("UserPlaylist"));
-            var youtubeApiKey = config.ReadText("YouTubeApiKey");
-            var youtubeApiClient = new YouTubeService(new BaseClientService.Initializer()
-            {
-                ApiKey = youtubeApiKey,
-                ApplicationName = GetType().ToString()
-            });
+            var compareTopicArn = config.ReadText("CompareTopicPublish");
             var dynamoDbClient = new AmazonDynamoDBClient();
-            var sesClient = new AmazonSimpleEmailServiceV2Client();
-            var provider = new DependencyProvider(youtubeApiClient, dynamoDbTableName, dynamoDbClient, sesClient, dynamoDbUserSubscriptionTableName);
+            var snsClient = new AmazonSimpleNotificationServiceClient();
+            var provider = new DependencyProvider(dynamoDbClient, snsClient, dynamoDbUserSubscriptionTableName, compareTopicArn);
             _logic = new Logic(provider, Logger);
         }
 
         public override async Task ProcessEventAsync(LambdaScheduleEvent schedule) {
-            var result = await _logic.Run();
-            LogInfo(result);
+            await _logic.Run();
         }
     }
 }

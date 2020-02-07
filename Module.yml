@@ -13,24 +13,24 @@ Secrets:
 # The Items section defines values and resources for the module.
 Items:
 
+  ##########################################
+  # Parameters
+  ##########################################
   - Parameter: YouTubeApiKey
     Default: AQICAHgV4F7JD1DwChzJANB4z5wxEXhp9LlpCHm1HLFM2FhScgFlqlohKyOECrKQPTGxJf7BAAAAhjCBgwYJKoZIhvcNAQcGoHYwdAIBADBvBgkqhkiG9w0BBwEwHgYJYIZIAWUDBAEuMBEEDC3TY6Nz/TUTBBAKDwIBEIBCUa+0jeEjHpA/NCd8WTdX7ExAhwVXDp5lN6lsIJulxSb0ABUUgxYx9KeQECrrEaHHQRk7d99FJW4xLyedkPMLm74f
     Type: Secret
-    Scope: PlaylistMonitor
+    Scope: all
 
-  - Resource: SesSendEmail
-    Description: Permissions required for sending email via ses
-    Value: "*"
-    Allow:
-      - "ses:SendEmail"
-    Scope: PlaylistMonitor
+  ##########################################
+  # Sns Topic
+  ##########################################
+  - Resource: CompareTopic
+    Description: Topic to publish to start the compare
+    Type: AWS::SNS::Topic
 
-  - Function: PlaylistMonitor
-    Memory: 256
-    Timeout: 60
-    Sources:
-      - Schedule: cron(25 20 * * ? *)
-
+  ##########################################
+  # Database
+  ##########################################
   - Resource: UserPlaylist
     Description: DynamoDb table to store current playlist
     Type: AWS::DynamoDB::Table
@@ -68,3 +68,45 @@ Items:
       ProvisionedThroughput:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
+
+
+  ##########################################
+  # Playlist Monitor
+  ##########################################
+  - Resource: SesSendEmail
+    Description: Permissions required for sending email via ses
+    Value: "*"
+    Allow:
+      - "ses:SendEmail"
+    Scope: PlaylistMonitor
+      
+  - Resource: CompareTopicPublish
+    Type: AWS::SNS::Topic
+    Value: !Ref CompareTopic
+    Allow: Publish
+    Scope: PlaylistMonitor
+
+  - Function: PlaylistMonitor
+    Memory: 256
+    Timeout: 60
+    Sources:
+      - Schedule: cron(25 20 * * ? *)
+
+  ##########################################
+  # Playlist Compare
+  ##########################################
+  - Parameter: FromEmail
+    Default: "patty.ramert@gmail.com"
+    Scope: PlaylistCompare
+
+  - Resource: CompareTopicSub
+    Type: AWS::SNS::Topic
+    Value: !Ref CompareTopic
+    Allow: Subscribe
+    Scope: PlaylistCompare
+
+  - Function: PlaylistCompare
+    Memory: 512
+    Timeout: 120
+    Sources:
+      - Topic: !Ref CompareTopic

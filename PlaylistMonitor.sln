@@ -4,6 +4,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlaylistMonitor", "Playlist
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlaylistMonitorTests", "PlaylistMonitorTests\PlaylistMonitorTests.csproj", "{D26B114F-C6AD-4C99-9635-C88F0D7D76FF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlaylistCompare", "PlaylistCompare\PlaylistCompare.csproj", "{93CB9B97-29D7-4E57-9CDB-1FA92581AEBD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlaylistCompareTests", "PlaylistCompareTests\PlaylistCompareTests.csproj", "{61F415E8-0ABF-4B89-A481-CFFCA44B564C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +22,13 @@ Global
 		{D26B114F-C6AD-4C99-9635-C88F0D7D76FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D26B114F-C6AD-4C99-9635-C88F0D7D76FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D26B114F-C6AD-4C99-9635-C88F0D7D76FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93CB9B97-29D7-4E57-9CDB-1FA92581AEBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93CB9B97-29D7-4E57-9CDB-1FA92581AEBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93CB9B97-29D7-4E57-9CDB-1FA92581AEBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93CB9B97-29D7-4E57-9CDB-1FA92581AEBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61F415E8-0ABF-4B89-A481-CFFCA44B564C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61F415E8-0ABF-4B89-A481-CFFCA44B564C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61F415E8-0ABF-4B89-A481-CFFCA44B564C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61F415E8-0ABF-4B89-A481-CFFCA44B564C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
