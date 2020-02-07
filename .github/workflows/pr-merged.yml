@@ -15,4 +15,6 @@ jobs:
           dotnet-version: 2.2.300
       - name: Run Tests
         if: github.event.pull_request.merged == true
-        run: dotnet test PlaylistMonitor.sln
+        working-directory: ${{ github.workspace }}
+        run: |
+          dotnet test PlaylistMonitor.sln 
