@@ -73,10 +73,10 @@ namespace Smylee.PlaylistMonitor.PlaylistMonitorTests {
                 }
             };
             var publishRequest = new PublishRequest {
-                Message = "{\"Key\":\"foo-bar@email.com\",\"Value\":[{\"requestedPlaylistUserName\":\"foo-username\",\"requestedPlaylistName\":\"foo-playlist\"},{\"requestedPlaylistUserName\":\"foo-username2\",\"requestedPlaylistName\":\"foo-playlist2\"}]}"
+                Message = "{\"Key\":\"foo-bar@email.com\",\"Value\":[{\"userName\":\"foo-username\",\"playlistName\":\"foo-playlist\"},{\"userName\":\"foo-username2\",\"playlistName\":\"foo-playlist2\"}]}"
             };
             var publishRequest2 = new PublishRequest {
-                Message = "{\"Key\":\"foo-bar2@email.com\",\"Value\":[{\"requestedPlaylistUserName\":\"foo-username3\",\"requestedPlaylistName\":\"foo-playlist3\"},{\"requestedPlaylistUserName\":\"foo-username4\",\"requestedPlaylistName\":\"foo-playlist4\"}]}"
+                Message = "{\"Key\":\"foo-bar2@email.com\",\"Value\":[{\"userName\":\"foo-username3\",\"playlistName\":\"foo-playlist3\"},{\"userName\":\"foo-username4\",\"playlistName\":\"foo-playlist4\"}]}"
             };
             var provider = new Mock<IDependencyProvider>(MockBehavior.Strict);
             provider.Setup(x => x.DynamoDbGetSubscriptionList()).Returns(Task.FromResult(scanResponse));
@@ -141,10 +141,10 @@ namespace Smylee.PlaylistMonitor.PlaylistMonitorTests {
                 }}
             };
             var publishRequest = new PublishRequest {
-                Message = "{\"Key\":\"foo-bar@email.com\",\"Value\":[{\"requestedPlaylistUserName\":\"foo-username\",\"requestedPlaylistName\":\"foo-playlist\"},{\"requestedPlaylistUserName\":\"foo-username2\",\"requestedPlaylistName\":\"foo-playlist2\"}]}"
+                Message = "{\"Key\":\"foo-bar@email.com\",\"Value\":[{\"userName\":\"foo-username\",\"playlistName\":\"foo-playlist\"},{\"userName\":\"foo-username2\",\"playlistName\":\"foo-playlist2\"}]}"
             };
             var publishRequest2 = new PublishRequest {
-                Message = "{\"Key\":\"foo-bar2@email.com\",\"Value\":[{\"requestedPlaylistUserName\":\"foo-username3\",\"requestedPlaylistName\":\"foo-playlist3\"},{\"requestedPlaylistUserName\":\"foo-username4\",\"requestedPlaylistName\":\"foo-playlist4\"}]}"
+                Message = "{\"Key\":\"foo-bar2@email.com\",\"Value\":[{\"userName\":\"foo-username3\",\"playlistName\":\"foo-playlist3\"},{\"userName\":\"foo-username4\",\"playlistName\":\"foo-playlist4\"}]}"
             };
             var provider = new Mock<IDependencyProvider>(MockBehavior.Strict);
             provider.Setup(x => x.SnsPublishMessageAsync(publishRequest.Message)).Returns(Task.CompletedTask);
