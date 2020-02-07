@@ -6,6 +6,7 @@
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <RootNamespace>Smylee.PlaylistMonitor.PlaylistMonitor</RootNamespace>
     <AWSProjectType>Lambda</AWSProjectType>
+    <IsTestProject>false</IsTestProject>
     <NoWarn>CS1998</NoWarn>
   </PropertyGroup>
   <ItemGroup>

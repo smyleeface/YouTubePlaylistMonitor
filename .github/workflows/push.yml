@@ -13,4 +13,4 @@ jobs:
         with:
           dotnet-version: 2.2.300
       - name: Run Tests
-        run: dotnet test     
+        run: dotnet test PlaylistMonitor.sln     
