@@ -20,26 +20,26 @@ namespace Smylee.YouTube.PlaylistCompare.PlaylistCompareTests {
 
     public class Tests {
         
-        [Fact]
-        public async Task LogicTest() {
-            var config = new LambdaConfig(new LambdaDictionarySource(new List<KeyValuePair<string, string>> {
-                new KeyValuePair<string, string>("/UserPlaylist","arn:aws:dynamodb:us-east-1:892750500233:table/Sandbox-Smylee-PlaylistMonitor-UserPlaylist-KH7S1J5PV8AL"),
-                new KeyValuePair<string, string>("/FromEmail","patty.ramert@gmail.com"),
-                new KeyValuePair<string, string>("/YouTubeApiKey","")
-            }));
-            var snsEvent = new SNSEvent {
-                Records = new List<SNSEvent.SNSRecord> {
-                    new SNSEvent.SNSRecord {
-                        Sns = new SNSEvent.SNSMessage {
-                            Message = "{\"Key\": \"patty.ramert@gmail.com\",\"Value\": [{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"electro 2016\"},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"Vocal HTC\"},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"Fyre!\"},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"Trance/House\"},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"Comedy\"}]}",
-                        }
-                    }
-                }
-                    
-            };
-            var function = new Function();
-            await function.InitializeAsync(config);
-            await function.ProcessMessageAsync(snsEvent);
+        // [Fact]
+        // public async Task LogicTest() {
+        //     var config = new LambdaConfig(new LambdaDictionarySource(new List<KeyValuePair<string, string>> {
+        //         new KeyValuePair<string, string>("/UserPlaylist","arn:aws:dynamodb:us-east-1:892750500233:table/Sandbox-Smylee-PlaylistMonitor-UserPlaylist-KH7S1J5PV8AL"),
+        //         new KeyValuePair<string, string>("/FromEmail","patty.ramert@gmail.com"),
+        //         new KeyValuePair<string, string>("/YouTubeApiKey","")
+        //     }));
+        //     var snsEvent = new SNSEvent {
+        //         Records = new List<SNSEvent.SNSRecord> {
+        //             new SNSEvent.SNSRecord {
+        //                 Sns = new SNSEvent.SNSMessage {
+        //                     Message = "{\"Key\": \"patty.ramert@gmail.com\",\"Value\": [{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"electro 2016\"},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"Vocal HTC\"},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"Fyre!\"},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"Trance/House\"},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"Comedy\"}]}",
+        //                 }
+        //             }
+        //         }
+        //             
+        //     };
+        //     var function = new Function();
+        //     await function.InitializeAsync(config);
+        //     await function.ProcessMessageAsync(snsEvent);
             // var provider = new Mock<IDependencyProvider>(MockBehavior.Strict);
             //     provider.SetupSequence(x => x.YouTubeApiChannelSnippetAsync(It.Is<string>(y => y.StartsWith("foo-username"))))
             //         .Returns(Task.FromResult(youtubeChannelListResponse1))
@@ -67,7 +67,7 @@ namespace Smylee.YouTube.PlaylistCompare.PlaylistCompareTests {
             //         .Returns(Task.FromResult(youtubeVideoListResponse5));
             //     provider.Setup(x => x.DynamoDbGetPlaylistListAsync("foo-bar@email.com", "foo-playlist-id")).Returns(Task.FromResult(dynamoGetItemResponse));
             //     provider.Setup(x => x.DynamoDbPutPlaylistListAsync("foo-b
-        }
+        // }
         
         // [Fact]
         // public async Task LogicTest() {

@@ -72,10 +72,10 @@ namespace Smylee.PlaylistMonitor.PlaylistMonitorTests {
                 }
             };
             var publishRequest = new PublishRequest {
-                Message = "{\"Key\":\"foo-bar@email.com\",\"Value\":[{\"userName\":\"foo-username\",\"playlistName\":\"foo-playlist\"},{\"userName\":\"foo-username2\",\"playlistName\":\"foo-playlist2\"}]}"
+                Message = "{\"Key\":\"foo-bar@email.com\",\"Value\":[{\"channelId\":\"foo-username\",\"playlistName\":\"foo-playlist\"},{\"channelId\":\"foo-username2\",\"playlistName\":\"foo-playlist2\"}]}"
             };
             var publishRequest2 = new PublishRequest {
-                Message = "{\"Key\":\"foo-bar2@email.com\",\"Value\":[{\"userName\":\"foo-username3\",\"playlistName\":\"foo-playlist3\"},{\"userName\":\"foo-username4\",\"playlistName\":\"foo-playlist4\"}]}"
+                Message = "{\"Key\":\"foo-bar2@email.com\",\"Value\":[{\"channelId\":\"foo-username3\",\"playlistName\":\"foo-playlist3\"},{\"channelId\":\"foo-username4\",\"playlistName\":\"foo-playlist4\"}]}"
             };
             var provider = new Mock<IDependencyProvider>(MockBehavior.Strict);
             provider.Setup(x => x.DynamoDbGetSubscriptionList()).Returns(Task.FromResult(scanResponse));
@@ -140,10 +140,10 @@ namespace Smylee.PlaylistMonitor.PlaylistMonitorTests {
                 }}
             };
             var publishRequest = new PublishRequest {
-                Message = "{\"Key\":\"foo-bar@email.com\",\"Value\":[{\"userName\":\"foo-username\",\"playlistName\":\"foo-playlist\"},{\"userName\":\"foo-username2\",\"playlistName\":\"foo-playlist2\"}]}"
+                Message = "{\"Key\":\"foo-bar@email.com\",\"Value\":[{\"channelId\":\"foo-username\",\"playlistName\":\"foo-playlist\"},{\"channelId\":\"foo-username2\",\"playlistName\":\"foo-playlist2\"}]}"
             };
             var publishRequest2 = new PublishRequest {
-                Message = "{\"Key\":\"foo-bar2@email.com\",\"Value\":[{\"userName\":\"foo-username3\",\"playlistName\":\"foo-playlist3\"},{\"userName\":\"foo-username4\",\"playlistName\":\"foo-playlist4\"}]}"
+                Message = "{\"Key\":\"foo-bar2@email.com\",\"Value\":[{\"channelId\":\"foo-username3\",\"playlistName\":\"foo-playlist3\"},{\"channelId\":\"foo-username4\",\"playlistName\":\"foo-playlist4\"}]}"
             };
             var provider = new Mock<IDependencyProvider>(MockBehavior.Strict);
             provider.Setup(x => x.SnsPublishMessageAsync(publishRequest.Message)).Returns(Task.CompletedTask);
