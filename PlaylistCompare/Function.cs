@@ -11,6 +11,8 @@ using Google.Apis.YouTube.v3;
 using LambdaSharp;
 using Newtonsoft.Json;
 using Smylee.PlaylistMonitor.PlaylistMonitor;
+using Smylee.YouTube.PlaylistMonitor.Library;
+using DependencyProvider = Smylee.YouTube.PlaylistMonitor.Library.DependencyProvider;
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.Json.JsonSerializer))]
@@ -34,13 +36,17 @@ namespace Smylee.YouTube.PlaylistCompare {
             var dynamoDbClient = new AmazonDynamoDBClient();
             var sesClient = new AmazonSimpleEmailServiceV2Client();
             var provider = new DependencyProvider(youtubeApiClient, dynamoDbTableName, dynamoDbClient, sesClient);
-            _logic = new Logic(fromEmail, provider, Logger);
+            var dataAccess = new DataAccess(provider);
+            _logic = new Logic(fromEmail, dataAccess, Logger);
         }
 
         public override async Task<string> ProcessMessageAsync(SNSEvent eventMessage) {
-            var playlistMonitorSubscription = JsonConvert.DeserializeObject<KeyValuePair<string, List<PlaylistMonitorSubscription>>>(eventMessage.Records.First().Sns.Message);
+            var message = eventMessage.Records.First().Sns.Message;
+            LogInfo(message);
+            var playlistMonitorSubscription = JsonConvert.DeserializeObject<KeyValuePair<string, List<PlaylistMonitorSubscription>>>(message);
             var dateNow = DateTime.Now.Date;
-            Task.WaitAll(_logic.Run(dateNow, playlistMonitorSubscription.Key, playlistMonitorSubscription.Value));
+            var requestEmail = playlistMonitorSubscription.Key;
+            Task.WaitAll(_logic.Run(dateNow, requestEmail, playlistMonitorSubscription.Value));
             return "done";
         }
     }

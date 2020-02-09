@@ -16,27 +16,26 @@ namespace Smylee.PlaylistMonitor.PlaylistMonitorTests {
     }
     
     public class Tests {
-        private ILambdaLogLevelLogger _lambdaLogger;
-        
+
         [Fact]
         public async Task LogicTest() {
             
             // Arrange
             var playlistMonitorSubscription = new PlaylistMonitorSubscription {
                 PlaylistName = "foo-playlist",
-                UserName = "foo-username"
+                ChannelId = "foo-username"
             };
             var playlistMonitorSubscription2 = new PlaylistMonitorSubscription {
                 PlaylistName = "foo-playlist2",
-                UserName = "foo-username2"
+                ChannelId = "foo-username2"
             };
             var playlistMonitorSubscription3 = new PlaylistMonitorSubscription {
                 PlaylistName = "foo-playlist3",
-                UserName = "foo-username3"
+                ChannelId = "foo-username3"
             };
             var playlistMonitorSubscription4 = new PlaylistMonitorSubscription {
                 PlaylistName = "foo-playlist4",
-                UserName = "foo-username4"
+                ChannelId = "foo-username4"
             };
             var scanResponse = new ScanResponse {
                 Items = new List<Dictionary<string, AttributeValue>> {
@@ -116,19 +115,19 @@ namespace Smylee.PlaylistMonitor.PlaylistMonitorTests {
             // Arrange
             var playlistMonitorSubscription = new PlaylistMonitorSubscription {
                 PlaylistName = "foo-playlist",
-                UserName = "foo-username"
+                ChannelId = "foo-username"
             };
             var playlistMonitorSubscription2 = new PlaylistMonitorSubscription {
                 PlaylistName = "foo-playlist2",
-                UserName = "foo-username2"
+                ChannelId = "foo-username2"
             };
             var playlistMonitorSubscription3 = new PlaylistMonitorSubscription {
                 PlaylistName = "foo-playlist3",
-                UserName = "foo-username3"
+                ChannelId = "foo-username3"
             };
             var playlistMonitorSubscription4 = new PlaylistMonitorSubscription {
                 PlaylistName = "foo-playlist4",
-                UserName = "foo-username4"
+                ChannelId = "foo-username4"
             };
             var expectedResponse = new Dictionary<string, List<PlaylistMonitorSubscription>> {
                 {"foo-bar@email.com", new List<PlaylistMonitorSubscription> {
@@ -165,19 +164,19 @@ namespace Smylee.PlaylistMonitor.PlaylistMonitorTests {
             // Arrange
             var playlistMonitorSubscription = new PlaylistMonitorSubscription {
                 PlaylistName = "foo-playlist",
-                UserName = "foo-username"
+                ChannelId = "foo-username"
             };
             var playlistMonitorSubscription2 = new PlaylistMonitorSubscription {
                 PlaylistName = "foo-playlist2",
-                UserName = "foo-username2"
+                ChannelId = "foo-username2"
             };
             var playlistMonitorSubscription3 = new PlaylistMonitorSubscription {
                 PlaylistName = "foo-playlist3",
-                UserName = "foo-username3"
+                ChannelId = "foo-username3"
             };
             var playlistMonitorSubscription4 = new PlaylistMonitorSubscription {
                 PlaylistName = "foo-playlist4",
-                UserName = "foo-username4"
+                ChannelId = "foo-username4"
             };
             var scanResponse = new ScanResponse {
                 Items = new List<Dictionary<string, AttributeValue>> {
@@ -233,13 +232,13 @@ namespace Smylee.PlaylistMonitor.PlaylistMonitorTests {
             // Assert
             Assert.Equal(expectedResponse.Keys, result.Keys);
             Assert.Equal(expectedResponse["foo-bar@email.com"][0].PlaylistName, result["foo-bar@email.com"][0].PlaylistName);
-            Assert.Equal(expectedResponse["foo-bar@email.com"][0].UserName, result["foo-bar@email.com"][0].UserName);
+            Assert.Equal(expectedResponse["foo-bar@email.com"][0].ChannelId, result["foo-bar@email.com"][0].ChannelId);
             Assert.Equal(expectedResponse["foo-bar@email.com"][1].PlaylistName, result["foo-bar@email.com"][1].PlaylistName);
-            Assert.Equal(expectedResponse["foo-bar@email.com"][1].UserName, result["foo-bar@email.com"][1].UserName);
+            Assert.Equal(expectedResponse["foo-bar@email.com"][1].ChannelId, result["foo-bar@email.com"][1].ChannelId);
             Assert.Equal(expectedResponse["foo-bar2@email.com"][0].PlaylistName, result["foo-bar2@email.com"][0].PlaylistName);
-            Assert.Equal(expectedResponse["foo-bar2@email.com"][0].UserName, result["foo-bar2@email.com"][0].UserName);
+            Assert.Equal(expectedResponse["foo-bar2@email.com"][0].ChannelId, result["foo-bar2@email.com"][0].ChannelId);
             Assert.Equal(expectedResponse["foo-bar2@email.com"][1].PlaylistName, result["foo-bar2@email.com"][1].PlaylistName);
-            Assert.Equal(expectedResponse["foo-bar2@email.com"][1].UserName, result["foo-bar2@email.com"][1].UserName);
+            Assert.Equal(expectedResponse["foo-bar2@email.com"][1].ChannelId, result["foo-bar2@email.com"][1].ChannelId);
         }
         
         
