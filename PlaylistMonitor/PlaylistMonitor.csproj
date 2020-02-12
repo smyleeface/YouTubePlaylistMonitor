@@ -21,4 +21,7 @@
     <PackageReference Include="Google.Apis.YouTube.v3" Version="1.42.0.1758" />
     <PackageReference Include="LambdaSharp" Version="0.7.0.*" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PlaylistMonitor.Library\PlaylistMonitor.Library.csproj" />
+  </ItemGroup>
 </Project>

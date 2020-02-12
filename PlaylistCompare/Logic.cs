@@ -29,19 +29,16 @@ namespace Smylee.YouTube.PlaylistCompare {
             _logger.LogInfo($"Processing subscription for {requestEmail}");
                  
             // init
-            var dateNowTimestamp = dateNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds.ToString(CultureInfo.InvariantCulture);
             var dateNowString = dateNow.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture);
             var finalEmail = $"<h1>Playlist Monitor Report for {dateNowString}</h1><br /><br />";
-            var databaseUpdates = new List<PlaylistMonitorDatabaseEntry>();
             var updateDatabase = new List<Task>();
             
             // check each playlist
-            // requestedPlaylists.ForEach(async playlist => {
-            foreach (var playlist in requestedPlaylists) {
-                
+            requestedPlaylists.ForEach(async playlist => {
+
                 var playlistTitle = playlist.PlaylistName;
                 var channelId = playlist.ChannelId;
-                
+
                 // get the channel snippet for channel id
                 var channelSnippet = await _dataAccess.GetChannelDataAsync(channelId);
                 if (string.IsNullOrEmpty(channelId)) {
@@ -58,31 +55,34 @@ namespace Smylee.YouTube.PlaylistCompare {
                     _logger.Log(LambdaLogLevel.INFO, null, $"channel {channelTitle} doesn't have a playlist `{playlistTitle}`");
                     return;
                 }
-                
+
                 // use playlist id to get list of items in playlist
                 var currentPlaylistItems = await _dataAccess.GetPlaylistItemDataFromYouTubeAsync(playlistData.Id);
-                
+
                 // find the previously stored playlist
                 var oldPlaylistItems = await _dataAccess.GetPlaylistItemDataFromCacheAsync(channelId, playlistTitle);
                 if (oldPlaylistItems == null) {
                     _logger.Log(LambdaLogLevel.INFO, null, "no existing playlist found in database");
                 }
-                
+
                 // generate the comparison report
                 finalEmail += playlistHeader + ComparisonReport(playlistTitle, oldPlaylistItems, currentPlaylistItems);
-                
+
                 // log data for database entry later
                 // todo turn this into bulk
-                updateDatabase.Add(_dataAccess.PutPlaylistItemDataFromCacheAsync(channelId, playlistTitle, playlistData, currentPlaylistItems));
-            }
+                updateDatabase.Add(_dataAccess.UpdatePlaylistItemDataFromCacheAsync(channelId, playlistTitle, currentPlaylistItems));
+            });
             
             // update database
             Task.WaitAll(updateDatabase.ToArray());
             
             // send email
-            await _dataAccess.SendEmail(_fromEmail, requestEmail, $"YouTube Playlist report for {dateNowString}", finalEmail);
+            await _dataAccess.SendEmailAsync(_fromEmail, requestEmail, $"YouTube Playlist report for {dateNowString}", finalEmail);
+            
+            // update subscription with last email sent content
+            await _dataAccess.UpdateSubscriptionCacheAsync(requestEmail, finalEmail);
         }
-        
+
         private string ComparisonReport(string playlistTitle, List<PlaylistItemsSnippetDb> cachedPlaylistItems, List<PlaylistItemsSnippetDb> currentPlaylistItems) {
             var deletedReport = DeletedReport(playlistTitle, cachedPlaylistItems, currentPlaylistItems);
             var addedReport = AddedReport(playlistTitle, cachedPlaylistItems, currentPlaylistItems);

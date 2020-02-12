@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using LambdaSharp.Logger;
 using Newtonsoft.Json;
+using Smylee.YouTube.PlaylistMonitor.Library.Models;
 
 namespace Smylee.PlaylistMonitor.PlaylistMonitor {
 

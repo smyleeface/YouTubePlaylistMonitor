@@ -63,7 +63,7 @@ namespace Smylee.YouTube.PlaylistMonitor.Library {
                 nextPageToken = response.NextPageToken;
             } while (nextPageToken != null);
             var playlist = playlists.First(x => x.Snippet.Title == playlistTitle).ToPlaylistSnippetDb();
-            await _provider.DynamoDbPutPCachePlaylistAsync(channelId, playlist);
+            await _provider.DynamoDbUpdateCachePlaylistAsync(channelId, playlist);
             return playlist;
         }
 
@@ -88,14 +88,18 @@ namespace Smylee.YouTube.PlaylistMonitor.Library {
             return playlistItem.Where(x => x.Snippet.Title != "Deleted video" && x.Snippet.Title != "Private video").Select(x => x.ToPlaylistItemsSnippetDb()).ToList();
         }
         
-        public async Task PutPlaylistItemDataFromCacheAsync(string playlistId, string playlistTitle, PlaylistSnippetDb playlistSnippet, List<PlaylistItemsSnippetDb> playlistsItems) {
-            await _provider.DynamoDbPutPCachePlaylistItemsAsync(playlistId, playlistTitle, playlistSnippet, playlistsItems);
+        public async Task UpdatePlaylistItemDataFromCacheAsync(string playlistId, string playlistTitle, List<PlaylistItemsSnippetDb> playlistsItems) {
+            await _provider.DynamoDbUpdateCachePlaylistItemsAsync(playlistId, playlistTitle, playlistsItems);
         }
 
 #endregion
 
-        public async Task SendEmail(string fromEmail, string requestEmail, string subject, string finalEmail) {
+        public async Task SendEmailAsync(string fromEmail, string requestEmail, string subject, string finalEmail) {
             await _provider.SesSendEmail(fromEmail, requestEmail, subject, finalEmail);
+        }
+
+        public async Task UpdateSubscriptionCacheAsync(string requestEmail, string finalEmail) {
+            await _provider.DynamoDbUpdateSubscriptionCacheAsync(requestEmail, finalEmail);
         }
     }
 }

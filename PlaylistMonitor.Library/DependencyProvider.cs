@@ -21,22 +21,24 @@ namespace Smylee.YouTube.PlaylistMonitor.Library {
         Task<ChannelSnippet> YouTubeApiChannelSnippetAsync(string channelId);
         Task<GetItemResponse> DynamoDbGetCachePlaylistsAsync(string channelId, string playlistTitle);
         Task<PlaylistListResponse> YouTubeApiPlaylistsAsync(string channelId, string nextPageToken = null);
-        Task DynamoDbPutPCachePlaylistAsync(string channelId, PlaylistSnippetDb playlistSnippet);
+        Task DynamoDbUpdateCachePlaylistAsync(string channelId, PlaylistSnippetDb playlistSnippet);
         Task<PlaylistItemListResponse> YouTubeApiPlaylistItemsAsync(string playlistId, string nextPageToken = null);
-        Task DynamoDbPutPCachePlaylistItemsAsync(string channelId, string playlistTitle, PlaylistSnippetDb playlistSnippet, List<PlaylistItemsSnippetDb> playlistItems);
         Task<GetItemResponse> DynamoDbGetCachePlaylistsItemsAsync(string channelId, string playlistTitle);
         Task SesSendEmail(string fromEmail, string requestEmail, string emailSubject,string emailBody);
-        
+        Task DynamoDbUpdateCachePlaylistItemsAsync(string channelId, string playlistTitle, List<PlaylistItemsSnippetDb> playlistItems);
+        Task DynamoDbUpdateSubscriptionCacheAsync(string requestEmail, string finalEmail);
     }
 
     public class DependencyProvider : IDependencyProvider {
-        private readonly string _dynamoDbTableName;
+        private readonly string _dynamoDbPlaylistTableName;
         private readonly YouTubeService _youtubeApiClient;
         private readonly IAmazonDynamoDB _dynamoDbClient;
         private readonly IAmazonSimpleEmailServiceV2 _sesClient;
+        private string _dynamoDbSubscriptionTableName;
 
-        public DependencyProvider(YouTubeService youtubeApiClient, string dynamoDbTableName, IAmazonDynamoDB dynamoDbClient, IAmazonSimpleEmailServiceV2 sesClient) {
-            _dynamoDbTableName = dynamoDbTableName;
+        public DependencyProvider(YouTubeService youtubeApiClient, string dynamoDbPlaylistTableName, string dynamoDbSubscriptionTableName, IAmazonDynamoDB dynamoDbClient, IAmazonSimpleEmailServiceV2 sesClient) {
+            _dynamoDbPlaylistTableName = dynamoDbPlaylistTableName;
+            _dynamoDbSubscriptionTableName = dynamoDbSubscriptionTableName;
             _youtubeApiClient = youtubeApiClient;
             _dynamoDbClient = dynamoDbClient;
             _sesClient = sesClient;
@@ -46,7 +48,7 @@ namespace Smylee.YouTube.PlaylistMonitor.Library {
         
         public async Task<GetItemResponse> DynamoDbGetCacheChannelAsync(string channelId) {
             var getRequest = new GetItemRequest {
-                TableName = "Sandbox-Smylee-PlaylistMonitor-CacheChannel-1DA4UVCX1JIE1", //TODO variable
+                TableName = _dynamoDbPlaylistTableName, //TODO variable
                 Key = new Dictionary<string, AttributeValue> {
                     { "channelId", new AttributeValue { S = channelId } }
                 }
@@ -57,7 +59,7 @@ namespace Smylee.YouTube.PlaylistMonitor.Library {
         public async Task DynamoDbPutPCacheChannelAsync(string channelId, ChannelSnippet channelSnippet) {
             var dateNow = DateTime.Now.Subtract(new DateTime(1970, 1, 1)).TotalSeconds.ToString(CultureInfo.InvariantCulture);
             var putRequest = new PutItemRequest {
-                TableName = "Sandbox-Smylee-PlaylistMonitor-CacheChannel-1DA4UVCX1JIE1",
+                TableName = _dynamoDbPlaylistTableName,
                 Item = new Dictionary<string, AttributeValue> {
                     {"channelId", new AttributeValue {
                         S = channelId
@@ -88,7 +90,7 @@ namespace Smylee.YouTube.PlaylistMonitor.Library {
         
         public async Task<GetItemResponse> DynamoDbGetCachePlaylistsAsync(string channelId, string playlistTitle) {
             var getRequest = new GetItemRequest {
-                TableName = "Sandbox-Smylee-PlaylistMonitor-CachePlaylists-EZQ47Q5W0F7U", //TODO variable
+                TableName = _dynamoDbPlaylistTableName, //TODO variable
                 Key = new Dictionary<string, AttributeValue> {
                     { "channelId", new AttributeValue { S = channelId } },
                     { "playlistTitle", new AttributeValue { S = playlistTitle } }
@@ -98,11 +100,11 @@ namespace Smylee.YouTube.PlaylistMonitor.Library {
         }
         
         
-        public async Task DynamoDbPutPCachePlaylistAsync(string channelId, PlaylistSnippetDb playlistSnippet) {
+        public async Task DynamoDbUpdateCachePlaylistAsync(string channelId, PlaylistSnippetDb playlistSnippet) {
             var dateNow = DateTime.Now.Subtract(new DateTime(1970, 1, 1)).TotalSeconds.ToString(CultureInfo.InvariantCulture);
-            var putRequest = new PutItemRequest {
-                TableName = "Sandbox-Smylee-PlaylistMonitor-CachePlaylists-EZQ47Q5W0F7U",
-                Item = new Dictionary<string, AttributeValue> {
+            var putRequest = new UpdateItemRequest {
+                TableName = _dynamoDbPlaylistTableName,
+                Key = new Dictionary<string, AttributeValue> {
                     {"channelId", new AttributeValue {
                         S = channelId
                     }},
@@ -117,7 +119,7 @@ namespace Smylee.YouTube.PlaylistMonitor.Library {
                     }}
                 }
             };
-            await _dynamoDbClient.PutItemAsync(putRequest);
+            await _dynamoDbClient.UpdateItemAsync(putRequest);
         }
 
         public async Task<PlaylistListResponse> YouTubeApiPlaylistsAsync(string channelId, string nextPageToken = null) {
@@ -136,7 +138,7 @@ namespace Smylee.YouTube.PlaylistMonitor.Library {
         
         public async Task<GetItemResponse> DynamoDbGetCachePlaylistsItemsAsync(string channelId, string playlistTitle) {
             var getRequest = new GetItemRequest {
-                TableName = "Sandbox-Smylee-PlaylistMonitor-CachePlaylists-EZQ47Q5W0F7U", //TODO variable
+                TableName = _dynamoDbPlaylistTableName, //TODO variable
                 Key = new Dictionary<string, AttributeValue> {
                     { "channelId", new AttributeValue { S = channelId } },
                     { "playlistTitle", new AttributeValue { S = playlistTitle } }
@@ -145,19 +147,16 @@ namespace Smylee.YouTube.PlaylistMonitor.Library {
             return await _dynamoDbClient.GetItemAsync(getRequest);
         }
         
-        public async Task DynamoDbPutPCachePlaylistItemsAsync(string channelId, string playlistTitle, PlaylistSnippetDb playlistSnippet, List<PlaylistItemsSnippetDb> playlistItems) {
+        public async Task DynamoDbUpdateCachePlaylistItemsAsync(string channelId, string playlistTitle, List<PlaylistItemsSnippetDb> playlistItems) {
             var dateNow = DateTime.Now.Subtract(new DateTime(1970, 1, 1)).TotalSeconds.ToString(CultureInfo.InvariantCulture);
-            var putRequest = new PutItemRequest {
-                TableName = "Sandbox-Smylee-PlaylistMonitor-CachePlaylists-EZQ47Q5W0F7U",
-                Item = new Dictionary<string, AttributeValue> {
+            var putRequest = new UpdateItemRequest {
+                TableName = _dynamoDbPlaylistTableName,
+                Key = new Dictionary<string, AttributeValue> {
                     {"channelId", new AttributeValue {
                         S = channelId
                     }},
                     {"playlistTitle", new AttributeValue {
                         S = playlistTitle
-                    }},
-                    {"playlistSnippet", new AttributeValue {
-                        S = JsonConvert.SerializeObject(playlistSnippet)
                     }},
                     {"playlistItemsSnippet", new AttributeValue {
                         L = playlistItems.Select(x => new AttributeValue {
@@ -169,10 +168,10 @@ namespace Smylee.YouTube.PlaylistMonitor.Library {
                     }}
                 }
             };
-            await _dynamoDbClient.PutItemAsync(putRequest);
+            await _dynamoDbClient.UpdateItemAsync(putRequest);
         }
 
-         public async Task<PlaylistItemListResponse> YouTubeApiPlaylistItemsAsync(string playlistId, string nextPageToken = null) {
+        public async Task<PlaylistItemListResponse> YouTubeApiPlaylistItemsAsync(string playlistId, string nextPageToken = null) {
              var playlistListItemsRequest = _youtubeApiClient.PlaylistItems.List("snippet");
              playlistListItemsRequest.PlaylistId = playlistId;
              playlistListItemsRequest.PageToken = nextPageToken;
@@ -197,6 +196,22 @@ namespace Smylee.YouTube.PlaylistMonitor.Library {
         
 #endregion
 
+        public async Task DynamoDbUpdateSubscriptionCacheAsync(string requestEmail, string finalEmail) {
+            var dateNow = DateTime.Now.Subtract(new DateTime(1970, 1, 1)).TotalSeconds.ToString(CultureInfo.InvariantCulture);
+            var putRequest = new UpdateItemRequest {
+                TableName = _dynamoDbSubscriptionTableName,
+                Key = new Dictionary<string, AttributeValue> {
+                    {"email", new AttributeValue {
+                        S = requestEmail
+                    }},
+                    {"finalEmail", new AttributeValue {
+                        S = finalEmail
+                    }}
+                }
+            };
+            await _dynamoDbClient.UpdateItemAsync(putRequest);        
+        }
+        
          public async Task SesSendEmail(string fromEmail, string requestEmail, string emailSubject,string emailBody) {
              var sendEmailRequest = new SendEmailRequest {
                  Content = new EmailContent {

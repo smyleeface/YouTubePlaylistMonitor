@@ -12,6 +12,7 @@ using LambdaSharp;
 using Newtonsoft.Json;
 using Smylee.PlaylistMonitor.PlaylistMonitor;
 using Smylee.YouTube.PlaylistMonitor.Library;
+using Smylee.YouTube.PlaylistMonitor.Library.Models;
 using DependencyProvider = Smylee.YouTube.PlaylistMonitor.Library.DependencyProvider;
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
@@ -26,7 +27,8 @@ namespace Smylee.YouTube.PlaylistCompare {
 
         //--- Methods ---
         public override async Task InitializeAsync(LambdaConfig config) {
-            var dynamoDbTableName = AwsConverters.ConvertDynamoDBArnToName(config.ReadText("UserPlaylist"));
+            var dynamoDbSubscriptionTableName = AwsConverters.ConvertDynamoDBArnToName(config.ReadText("UserSubscriptions"));
+            var dynamoDbTableName = AwsConverters.ConvertDynamoDBArnToName(config.ReadText("CachePlaylists"));
             var fromEmail = config.ReadText("FromEmail");
             var youtubeApiKey = config.ReadText("YouTubeApiKey");
             var youtubeApiClient = new YouTubeService(new BaseClientService.Initializer {
@@ -35,7 +37,7 @@ namespace Smylee.YouTube.PlaylistCompare {
             });
             var dynamoDbClient = new AmazonDynamoDBClient();
             var sesClient = new AmazonSimpleEmailServiceV2Client();
-            var provider = new DependencyProvider(youtubeApiClient, dynamoDbTableName, dynamoDbClient, sesClient);
+            var provider = new DependencyProvider(youtubeApiClient, dynamoDbTableName, dynamoDbSubscriptionTableName, dynamoDbClient, sesClient);
             var dataAccess = new DataAccess(provider);
             _logic = new Logic(fromEmail, dataAccess, Logger);
         }

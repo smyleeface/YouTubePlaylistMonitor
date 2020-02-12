@@ -29,29 +29,8 @@ Items:
     Type: AWS::SNS::Topic
 
   ##########################################
-  # Database
+  # Playlist Monitor
   ##########################################
-  - Resource: UserPlaylist
-    Description: DynamoDb table to store current playlist
-    Type: AWS::DynamoDB::Table
-    Allow: ReadWrite
-    Scope:
-      - all
-    Properties:
-      AttributeDefinitions:
-        - AttributeName: email
-          AttributeType: S
-        - AttributeName: playlistId
-          AttributeType: S
-      KeySchema:
-        - AttributeName: email
-          KeyType: HASH
-        - AttributeName: playlistId
-          KeyType: RANGE
-      ProvisionedThroughput:
-        ReadCapacityUnits: 1
-        WriteCapacityUnits: 1
-
   - Resource: UserSubscriptions
     Description: DynamoDb table to store subscriptions to monitor
     Type: AWS::DynamoDB::Table
@@ -69,77 +48,6 @@ Items:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
 
-  - Resource: CacheChannel
-    Description: caching database to store the channel name and ids
-    Type: AWS::DynamoDB::Table
-    Allow: ReadWrite
-    Scope:
-      - all
-    Properties:
-      AttributeDefinitions:
-        - AttributeName: channelId
-          AttributeType: S
-      KeySchema:
-        - AttributeName: channelId
-          KeyType: HASH
-#        - AttributeName: channelSnippet
-#          KeyType: HASH
-#        - AttributeName: timestamp
-#          KeyType: HASH
-      ProvisionedThroughput:
-        ReadCapacityUnits: 1
-        WriteCapacityUnits: 1
-
-  - Resource: CachePlaylists
-    Description: caching database to store the playlist name and ids
-    Type: AWS::DynamoDB::Table
-    Allow: ReadWrite
-    Scope:
-      - all
-    Properties:
-      AttributeDefinitions:
-        - AttributeName: channelId
-          AttributeType: S
-        - AttributeName: playlistTitle
-          AttributeType: S
-#        - AttributeName: playlistId
-#          AttributeType: S
-#        - AttributeName: playlistSnippet
-#          AttributeType: S
-      KeySchema:
-        - AttributeName: channelId
-          KeyType: HASH
-        - AttributeName: playlistTitle
-          KeyType: RANGE
-      ProvisionedThroughput:
-        ReadCapacityUnits: 1
-        WriteCapacityUnits: 1
-
-  - Resource: PlaylistsMonitorData
-    Description: DynamoDb table to store current playlist
-    Type: AWS::DynamoDB::Table
-    Allow: ReadWrite
-    Scope:
-      - all
-    Properties:
-      AttributeDefinitions:
-        - AttributeName: email
-          AttributeType: S
-        - AttributeName: playlistId
-          AttributeType: S
-      KeySchema:
-        - AttributeName: email
-          KeyType: HASH
-        - AttributeName: playlistId
-          KeyType: RANGE
-      ProvisionedThroughput:
-        ReadCapacityUnits: 1
-        WriteCapacityUnits: 1
-
-
-  ##########################################
-  # Playlist Monitor
-  ##########################################
   - Resource: SesSendEmail
     Description: Permissions required for sending email via ses
     Value: "*"
@@ -162,6 +70,37 @@ Items:
   ##########################################
   # Playlist Compare
   ##########################################
+  - Resource: CachePlaylists
+    Description: caching database to store the playlist name and ids
+    Type: AWS::DynamoDB::Table
+    Allow: ReadWrite
+    Scope:
+      - CompareTopicSub
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: channelId
+          AttributeType: S
+      #        - AttributeName: channelSnippet
+      #          AttributeType: S
+        - AttributeName: playlistTitle
+          AttributeType: S
+      #        - AttributeName: playlistId
+      #          AttributeType: S
+      #        - AttributeName: playlistSnippet
+      #          AttributeType: S
+      #        - AttributeName: playlistItemsSnippet
+      #          AttributeType: S
+      #        - AttributeName: timestamp
+      #          AttributeType: S
+      KeySchema:
+        - AttributeName: channelId
+          KeyType: HASH
+        - AttributeName: playlistTitle
+          KeyType: RANGE
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+        
   - Parameter: FromEmail
     Default: "patty.ramert@gmail.com"
     Scope: PlaylistCompare
@@ -171,7 +110,6 @@ Items:
     Value: !Ref CompareTopic
     Allow: Subscribe
     Scope: PlaylistCompare
-
   - Function: PlaylistCompare
     Memory: 512
     Timeout: 600
