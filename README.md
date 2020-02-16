@@ -12,7 +12,7 @@ lash deploy --tier devel --bootstrap --profile profilename
 ```
 
 ## TODO
-- cleanup caching tables, models, and request payloads
-- exponental backoff of youtube api request 
-- step functions for long running playlists
-- with caching then i can maybe do a fanout, but I don't know if other lambda functions are making calls at the same time 
+- streamline number of calls for existing requests (since all data is now in one db row)
+- exponental backoff of youtube api request -- check for error code
+- step functions for long running playlists?
+- with caching, maybe do a fanout?
