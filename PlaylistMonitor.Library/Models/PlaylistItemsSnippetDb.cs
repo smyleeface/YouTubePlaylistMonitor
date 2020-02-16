@@ -1,4 +1,3 @@
-using Google.Apis.YouTube.v3.Data;
 using Newtonsoft.Json;
 
 namespace Smylee.YouTube.PlaylistMonitor.Library.Models {
@@ -10,6 +9,12 @@ namespace Smylee.YouTube.PlaylistMonitor.Library.Models {
         
         [JsonProperty("title")]
         public string Title;
+        
+        [JsonProperty("channelName")]
+        public string ChannelTitle;
+        
+        [JsonProperty("channelId")]
+        public string ChannelId;
         
         [JsonProperty("description", NullValueHandling = NullValueHandling.Ignore)]
         public string Description;

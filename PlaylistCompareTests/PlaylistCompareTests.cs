@@ -19,28 +19,23 @@ namespace Smylee.YouTube.PlaylistCompare.PlaylistCompareTests {
     }
 
     public class Tests {
-        
+        //
         // [Fact]
-        // public async Task LogicTest() {
+        // public async Task LogicFunctionalTest() {
         //     var config = new LambdaConfig(new LambdaDictionarySource(new List<KeyValuePair<string, string>> {
-        //         new KeyValuePair<string, string>("/UserPlaylist","arn:aws:dynamodb:us-east-1:892750500233:table/Sandbox-Smylee-PlaylistMonitor-UserPlaylist-KH7S1J5PV8AL"),
-        //         new KeyValuePair<string, string>("/FromEmail","patty.ramert@gmail.com"),
-        //         new KeyValuePair<string, string>("/YouTubeApiKey","")
+        //         new KeyValuePair<string, string>("/CachePlaylists", "arn:aws:dynamodb:us-east-1:892750500233:table/Sandbox-Smylee-PlaylistMonitor-CachePlaylists-EZQ47Q5W0F7U"),
+        //         new KeyValuePair<string, string>("/CacheVideos", "arn:aws:dynamodb:us-east-1:892750500233:table/Sandbox-Smylee-PlaylistMonitor-CacheVideos-1S8TRT4N4GXNY"),
+        //         new KeyValuePair<string, string>("/UserSubscriptions", "arn:aws:dynamodb:us-east-1:892750500233:table/Sandbox-Smylee-PlaylistMonitor-UserSubscriptions-1IZ8B6HR1NHF9"),
+        //         new KeyValuePair<string, string>("/FromEmail", "patty.ramert@gmail.com"),
+        //         new KeyValuePair<string, string>("/YouTubeApiKey", "")
         //     }));
-        //     var snsEvent = new SNSEvent {
-        //         Records = new List<SNSEvent.SNSRecord> {
-        //             new SNSEvent.SNSRecord {
-        //                 Sns = new SNSEvent.SNSMessage {
-        //                     Message = "{\"Key\": \"patty.ramert@gmail.com\",\"Value\": [{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"electro 2016\"},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"Vocal HTC\"},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"Fyre!\"},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"Trance/House\"},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"Comedy\"}]}",
-        //                 }
-        //             }
-        //         }
-        //             
-        //     };
+        //     var snsEvent = new SNSEvent {Records = new List<SNSEvent.SNSRecord> {new SNSEvent.SNSRecord {Sns = new SNSEvent.SNSMessage {Message = "{\"Key\": \"patty.ramert@gmail.com\",\"Value\": [{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"electro 2016\"},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"Vocal HTC\"},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"Fyre!\"},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"Trance/House\"},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"Comedy\"}]}",}}}};
         //     var function = new Function();
         //     await function.InitializeAsync(config);
         //     await function.ProcessMessageAsync(snsEvent);
-            // var provider = new Mock<IDependencyProvider>(MockBehavior.Strict);
+        // }
+
+        // var provider = new Mock<IDependencyProvider>(MockBehavior.Strict);
             //     provider.SetupSequence(x => x.YouTubeApiChannelSnippetAsync(It.Is<string>(y => y.StartsWith("foo-username"))))
             //         .Returns(Task.FromResult(youtubeChannelListResponse1))
             //         .Returns(Task.FromResult(youtubeChannelListResponse2))

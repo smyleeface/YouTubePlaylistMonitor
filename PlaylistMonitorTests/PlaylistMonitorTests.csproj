@@ -25,6 +25,7 @@
     <PackageReference Include="Google.Apis.YouTube.v3" Version="1.42.0.1758" />
     <PackageReference Condition="'$(LAMBDASHARP)'==''" Include="LambdaSharp" Version="0.7.0.*" />
     <ProjectReference Condition="'$(LAMBDASHARP)'!=''" Include="$(LAMBDASHARP)/src/LambdaSharp/LambdaSharp.csproj" />
+    <ProjectReference Include="..\PlaylistMonitor.Library\PlaylistMonitor.Library.csproj" />
     <ProjectReference Include="..\PlaylistMonitor\PlaylistMonitor.csproj" />
   </ItemGroup>
 </Project>

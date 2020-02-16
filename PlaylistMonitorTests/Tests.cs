@@ -7,6 +7,7 @@ using LambdaSharp.Logger;
 using Moq;
 using Newtonsoft.Json;
 using Smylee.PlaylistMonitor.PlaylistMonitor;
+using Smylee.YouTube.PlaylistMonitor.Library.Models;
 using Xunit;
 
 namespace Smylee.PlaylistMonitor.PlaylistMonitorTests {

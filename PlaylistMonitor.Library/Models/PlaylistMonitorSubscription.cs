@@ -9,5 +9,11 @@ namespace Smylee.YouTube.PlaylistMonitor.Library.Models {
         
         [JsonProperty("playlistName")]
         public string PlaylistName;
+        
+        [JsonProperty("finalEmail")]
+        public string FinalEmail;
+        
+        [JsonProperty("timestamp")]
+        public string Timestamp;
     }
 }
