@@ -12,7 +12,7 @@ lash deploy --tier devel --bootstrap --profile profilename
 ```
 
 ## TODO
-- streamline number of calls for existing requests (since all data is now in one db row)
+- turn updaing database into batch write requests
 - exponental backoff of youtube api request -- check for error code
 - step functions for long running playlists?
 - with caching, maybe do a fanout?

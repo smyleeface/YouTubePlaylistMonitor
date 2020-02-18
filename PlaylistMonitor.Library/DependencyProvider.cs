@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
@@ -37,8 +36,8 @@ namespace Smylee.YouTube.PlaylistMonitor.Library {
         private readonly YouTubeService _youtubeApiClient;
         private readonly IAmazonDynamoDB _dynamoDbClient;
         private readonly IAmazonSimpleEmailServiceV2 _sesClient;
-        private string _dynamoDbSubscriptionTableName;
-        private string _dynamoDbVideoTableName;
+        private readonly string _dynamoDbSubscriptionTableName;
+        private readonly string _dynamoDbVideoTableName;
 
         public DependencyProvider(YouTubeService youtubeApiClient, string dynamoDbPlaylistTableName, string dynamoDbSubscriptionTableName, string dynamoDbVideoTableName, IAmazonDynamoDB dynamoDbClient, IAmazonSimpleEmailServiceV2 sesClient) {
             _dynamoDbVideoTableName = dynamoDbVideoTableName;
@@ -89,7 +88,7 @@ namespace Smylee.YouTube.PlaylistMonitor.Library {
             channelsListRequest.Id = channelId;
             channelsListRequest.MaxResults = 50;
             var response = await channelsListRequest.ExecuteAsync();
-            Thread.Sleep(1000);
+            await Task.Delay(500);
             return response.Items.Count > 0 ? response.Items.First().Snippet : null;
         }
 
@@ -119,17 +118,26 @@ namespace Smylee.YouTube.PlaylistMonitor.Library {
                     }},
                     {"playlistTitle", new AttributeValue {
                         S = playlistSnippet.Title
+                    }}
+                },
+                AttributeUpdates = new Dictionary<string, AttributeValueUpdate>{
+                    {"playlistSnippet", new AttributeValueUpdate {
+                        Action = AttributeAction.PUT,
+                        Value = new AttributeValue {
+                            S = JsonConvert.SerializeObject(playlistSnippet)
+                        }
                     }},
-                    {"playlistSnippet", new AttributeValue {
-                        S = JsonConvert.SerializeObject(playlistSnippet)
-                    }},
-                    {"timestamp", new AttributeValue {
-                        N = dateNow
+                    {"timestamp", new AttributeValueUpdate {
+                        Action = AttributeAction.PUT,
+                        Value = new AttributeValue {
+                            N = dateNow 
+                        }
                     }}
                 }
             };
             await _dynamoDbClient.UpdateItemAsync(putRequest);
         }
+        
 
         public async Task<PlaylistListResponse> YouTubeApiPlaylistsAsync(string channelId, string nextPageToken = null) {
             var playlistListRequest = _youtubeApiClient.Playlists.List("snippet");
@@ -137,7 +145,7 @@ namespace Smylee.YouTube.PlaylistMonitor.Library {
             playlistListRequest.PageToken = nextPageToken;
             playlistListRequest.MaxResults = 50;
             var response = await playlistListRequest.ExecuteAsync();
-            Thread.Sleep(1000);
+            await Task.Delay(500);
             return response;
         }
 
@@ -194,7 +202,7 @@ namespace Smylee.YouTube.PlaylistMonitor.Library {
              playlistListItemsRequest.PageToken = nextPageToken;
              playlistListItemsRequest.MaxResults = 50;
              var response = await playlistListItemsRequest.ExecuteAsync();
-             Thread.Sleep(1000);
+             await Task.Delay(500);
              return response;
          }
 
@@ -241,7 +249,7 @@ namespace Smylee.YouTube.PlaylistMonitor.Library {
             playlistListRequest.Id = videoId;
             playlistListRequest.MaxResults = 1;
             var response = await playlistListRequest.ExecuteAsync();
-            Thread.Sleep(1000);
+            await Task.Delay(500);
             return response;
         }      
         
@@ -267,7 +275,7 @@ namespace Smylee.YouTube.PlaylistMonitor.Library {
                     {"timestamp", new AttributeValueUpdate {
                             Action = AttributeAction.PUT,
                             Value = new AttributeValue {
-                                S = dateNow
+                                N = dateNow
                             }
                         }
                     }
@@ -275,6 +283,7 @@ namespace Smylee.YouTube.PlaylistMonitor.Library {
             };
             await _dynamoDbClient.UpdateItemAsync(putRequest);        
         }
+        
         
          public async Task SesSendEmail(string fromEmail, string requestEmail, string emailSubject,string emailBody) {
              var sendEmailRequest = new SendEmailRequest {

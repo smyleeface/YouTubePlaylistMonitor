@@ -177,5 +177,12 @@ namespace Smylee.YouTube.PlaylistMonitor.Library {
         public async Task UpdateSubscriptionCacheAsync(string requestEmail, string finalEmail) {
             await _provider.DynamoDbUpdateSubscriptionCacheAsync(requestEmail, finalEmail);
         }
+
+        public async Task<(ChannelSnippetDb, PlaylistSnippetDb, List<PlaylistItemsSnippetDb>)> GetSubscriptionData(string channelId, string playlistTitle) {
+            var channelSnippet = await GetChannelDataAsync(channelId, playlistTitle);
+            var playlistData = await GetPlaylistDataAsync(channelId, playlistTitle);
+            var oldPlaylistItems = await GetPlaylistItemDataFromCacheAsync(channelId, playlistTitle);
+            return (channelSnippet, playlistData, oldPlaylistItems);
+        }
     }
 }

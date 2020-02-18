@@ -36,33 +36,26 @@ namespace Smylee.YouTube.PlaylistCompare {
 
                 var playlistTitle = playlist.PlaylistName;
                 var channelId = playlist.ChannelId;
-
-                // get the channel snippet for channel id
-                var channelSnippet = await _dataAccess.GetChannelDataAsync(channelId, playlistTitle);
-                if (string.IsNullOrEmpty(channelId)) {
+                
+                // get cached data or lookup data from youtube
+                var (channelSnippet, playlistData, oldPlaylistItems)  = await _dataAccess.GetSubscriptionData(channelId, playlistTitle);
+                if (string.IsNullOrEmpty(channelSnippet.Title)) {
                     _logger.Log(LambdaLogLevel.INFO, null, $"no channel snippet found for {channelId}");
                     return;
                 }
-                var channelTitle = channelSnippet.Title;
-
-                // get the current playlists for that channel id
-                var playlistData = await _dataAccess.GetPlaylistDataAsync(channelId, playlistTitle);
                 if (playlistData == null) {
-                    _logger.Log(LambdaLogLevel.INFO, null, $"channel {channelTitle} doesn't have a playlist `{playlistTitle}`");
+                    _logger.Log(LambdaLogLevel.INFO, null, $"channel {channelSnippet.Title} doesn't have a playlist `{playlistTitle}`");
                     return;
                 }
-                
-                // use playlist id to get list of items in playlist
-                var currentPlaylistItems = await _dataAccess.GetRecentPlaylistItemDataAsync(playlistData.Id);
-
-                // find the previously stored playlist
-                var oldPlaylistItems = await _dataAccess.GetPlaylistItemDataFromCacheAsync(channelId, playlistTitle);
                 if (oldPlaylistItems == null) {
                     _logger.Log(LambdaLogLevel.INFO, null, "no existing playlist found in database");
                 }
-
+                
+                // get existing data from youtube
+                var currentPlaylistItems = await _dataAccess.GetRecentPlaylistItemDataAsync(playlistData.Id);
+                
                 // generate the comparison report
-                finalEmail += $"<h2>{playlistTitle} playlist by {channelTitle}</h2><br /><br />" + 
+                finalEmail += $"<h2>{playlistTitle} playlist by {channelSnippet.Title}</h2><br /><br />" + 
                               Comparison.Report(playlistTitle, oldPlaylistItems, currentPlaylistItems);
 
                 // log data for database entry later

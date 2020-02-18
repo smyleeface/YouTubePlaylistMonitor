@@ -65,8 +65,6 @@ Items:
       AttributeDefinitions:
         - AttributeName: channelId
           AttributeType: S
-        #        - AttributeName: channelSnippet
-        #          AttributeType: S
         - AttributeName: playlistTitle
           AttributeType: S
       #        - AttributeName: channelSnippet
