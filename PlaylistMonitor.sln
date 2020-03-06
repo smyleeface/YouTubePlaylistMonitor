@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlaylistCompare", "Playlist
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlaylistCompareTests", "PlaylistCompareTests\PlaylistCompareTests.csproj", "{61F415E8-0ABF-4B89-A481-CFFCA44B564C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlaylistMonitor.Library", "PlaylistMonitor.Library\PlaylistMonitor.Library.csproj", "{652C1C22-3A27-4414-B522-993792B6C634}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{61F415E8-0ABF-4B89-A481-CFFCA44B564C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{61F415E8-0ABF-4B89-A481-CFFCA44B564C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{61F415E8-0ABF-4B89-A481-CFFCA44B564C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{652C1C22-3A27-4414-B522-993792B6C634}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{652C1C22-3A27-4414-B522-993792B6C634}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{652C1C22-3A27-4414-B522-993792B6C634}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{652C1C22-3A27-4414-B522-993792B6C634}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

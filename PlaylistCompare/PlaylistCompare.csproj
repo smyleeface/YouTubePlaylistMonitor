@@ -10,20 +10,7 @@
     <NoWarn>CS1998</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Amazon.Lambda.Core" Version="1.1.0" />
-    <PackageReference Include="Amazon.Lambda.Serialization.Json" Version="1.5.0" />
-    <PackageReference Include="System.Linq" Version="4.3.0" />
-    <PackageReference Include="xunit" Version="2.4.1" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.3.104.14" />
-    <PackageReference Include="AWSSDK.SimpleEmailV2" Version="3.3.102.11" />
-    <PackageReference Include="Google.Apis.YouTube.v3" Version="1.42.0.1758" />
-    <PackageReference Include="LambdaSharp" Version="0.7.0.*" />
-<!--    <PackageReference Condition="'$(LAMBDASHARP)'==''" Include="LambdaSharp" Version="0.7.0.*" />-->
-<!--    <ProjectReference Condition="'$(LAMBDASHARP)'!=''" Include="$(LAMBDASHARP)/src/LambdaSharp/LambdaSharp.csproj" />-->
-  </ItemGroup>
-  <ItemGroup>
+    <ProjectReference Include="..\PlaylistMonitor.Library\PlaylistMonitor.Library.csproj" />
     <ProjectReference Include="..\PlaylistMonitor\PlaylistMonitor.csproj" />
   </ItemGroup>
 </Project>

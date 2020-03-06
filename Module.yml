@@ -29,29 +29,8 @@ Items:
     Type: AWS::SNS::Topic
 
   ##########################################
-  # Database
+  # Databases
   ##########################################
-  - Resource: UserPlaylist
-    Description: DynamoDb table to store current playlist
-    Type: AWS::DynamoDB::Table
-    Allow: ReadWrite
-    Scope:
-      - all
-    Properties:
-      AttributeDefinitions:
-        - AttributeName: email
-          AttributeType: S
-        - AttributeName: playlistId
-          AttributeType: S
-      KeySchema:
-        - AttributeName: email
-          KeyType: HASH
-        - AttributeName: playlistId
-          KeyType: RANGE
-      ProvisionedThroughput:
-        ReadCapacityUnits: 1
-        WriteCapacityUnits: 1
-
   - Resource: UserSubscriptions
     Description: DynamoDb table to store subscriptions to monitor
     Type: AWS::DynamoDB::Table
@@ -65,10 +44,72 @@ Items:
       KeySchema:
         - AttributeName: email
           KeyType: HASH
+          #        - AttributeName: playlists
+          #          AttributeType: L
+          #        - AttributeName: finalEmail
+          #          AttributeType: S
+          #        - AttributeName: timestamp
+          #          AttributeType: N
       ProvisionedThroughput:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
 
+
+  - Resource: CachePlaylists
+    Description: caching database to store the playlist name and ids
+    Type: AWS::DynamoDB::Table
+    Allow: ReadWrite
+    Scope:
+      - PlaylistCompare
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: channelId
+          AttributeType: S
+        - AttributeName: playlistTitle
+          AttributeType: S
+      #        - AttributeName: channelSnippet
+      #          AttributeType: S
+      #        - AttributeName: playlistId
+      #          AttributeType: S
+      #        - AttributeName: playlistSnippet
+      #          AttributeType: S
+      #        - AttributeName: playlistItemsSnippet
+      #          AttributeType: L
+      #        - AttributeName: timestamp
+      #          AttributeType: N
+      KeySchema:
+        - AttributeName: channelId
+          KeyType: HASH
+        - AttributeName: playlistTitle
+          KeyType: RANGE
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+
+  - Resource: CacheVideos
+    Description: caching database to store the video id, channel name and id
+    Type: AWS::DynamoDB::Table
+    Allow: ReadWrite
+    Scope:
+      - PlaylistCompare
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: videoId
+          AttributeType: S
+      #        - AttributeName: channelTitle
+      #          AttributeType: S
+      #        - AttributeName: channelId
+      #          AttributeType: S
+      #        - AttributeName: videoSnippet
+      #          AttributeType: S
+      #        - AttributeName: timestamp
+      #          AttributeType: N
+      KeySchema:
+        - AttributeName: videoId
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
 
   ##########################################
   # Playlist Monitor
@@ -96,7 +137,6 @@ Items:
   # Playlist Compare
   ##########################################
   - Parameter: FromEmail
-    Default: "patty.ramert@gmail.com"
     Scope: PlaylistCompare
 
   - Resource: CompareTopicSub
@@ -107,6 +147,6 @@ Items:
 
   - Function: PlaylistCompare
     Memory: 512
-    Timeout: 120
+    Timeout: 600
     Sources:
       - Topic: !Ref CompareTopic
