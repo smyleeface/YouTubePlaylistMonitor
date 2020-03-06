@@ -8,13 +8,13 @@ YouTube Playlist Monitor will monitor changes in your playlist and sends an emai
 
 ## Setup
 
-- Install dotnet  
-- Install LambdaSharp
+- Install [.NET](https://dotnet.microsoft.com/download/dotnet-framework)  
+- Install [LambdaSharp](https://lambdasharp.net/)
     ```bash
     dotnet install -g LambdaSharp.Tools
     lash init --tier tiername --quick-start
     ```
-- AWS SES Domain or Email Verified
+- [AWS SES Domain or Email Verified](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-addresses-and-domains.html)
 
 ## Deploy
 
