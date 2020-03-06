@@ -137,7 +137,6 @@ Items:
   # Playlist Compare
   ##########################################
   - Parameter: FromEmail
-    Default: "patty.ramert@gmail.com"
     Scope: PlaylistCompare
 
   - Resource: CompareTopicSub
