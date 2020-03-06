@@ -20,20 +20,20 @@ namespace Smylee.YouTube.PlaylistCompare.PlaylistCompareTests {
 
     public class Tests {
 
-        [Fact]
-        public async Task LogicFunctionalTest() {
-            var config = new LambdaConfig(new LambdaDictionarySource(new List<KeyValuePair<string, string>> {
-                new KeyValuePair<string, string>("/CachePlaylists", "arn:aws:dynamodb:us-east-1:892750500233:table/Sandbox-Smylee-PlaylistMonitor-CachePlaylists-EZQ47Q5W0F7U"),
-                new KeyValuePair<string, string>("/CacheVideos", "arn:aws:dynamodb:us-east-1:892750500233:table/Sandbox-Smylee-PlaylistMonitor-CacheVideos-1S8TRT4N4GXNY"),
-                new KeyValuePair<string, string>("/UserSubscriptions", "arn:aws:dynamodb:us-east-1:892750500233:table/Sandbox-Smylee-PlaylistMonitor-UserSubscriptions-1IZ8B6HR1NHF9"),
-                new KeyValuePair<string, string>("/FromEmail", "patty.ramert@gmail.com"),
-                new KeyValuePair<string, string>("/YouTubeApiKey", "REDACTED")
-            }));
-            var snsEvent = new SNSEvent {Records = new List<SNSEvent.SNSRecord> {new SNSEvent.SNSRecord {Sns = new SNSEvent.SNSMessage {Message = "{\"Key\": \"patty.ramert@gmail.com\",\"Value\": [{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"electro 2016\",\"finalEmail\": null,\"timestamp\": null},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"Vocal HTC\",\"finalEmail\": null,\"timestamp\": null},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"Fyre!\",\"finalEmail\": null,\"timestamp\": null},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"Trance/House\",\"finalEmail\": null,\"timestamp\": null},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"Comedy\",\"finalEmail\": null,\"timestamp\": null},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"amazing\",\"finalEmail\": null,\"timestamp\": null},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"music\",\"finalEmail\": null,\"timestamp\": null}]}",}}}};
-            var function = new Function();
-            await function.InitializeAsync(config);
-            await function.ProcessMessageAsync(snsEvent);
-        }
+        // [Fact]
+        // public async Task LogicFunctionalTest() {
+        //     var config = new LambdaConfig(new LambdaDictionarySource(new List<KeyValuePair<string, string>> {
+        //         new KeyValuePair<string, string>("/CachePlaylists", "arn:aws:dynamodb:us-east-1:892750500233:table/Sandbox-Smylee-PlaylistMonitor-CachePlaylists-EZQ47Q5W0F7U"),
+        //         new KeyValuePair<string, string>("/CacheVideos", "arn:aws:dynamodb:us-east-1:892750500233:table/Sandbox-Smylee-PlaylistMonitor-CacheVideos-1S8TRT4N4GXNY"),
+        //         new KeyValuePair<string, string>("/UserSubscriptions", "arn:aws:dynamodb:us-east-1:892750500233:table/Sandbox-Smylee-PlaylistMonitor-UserSubscriptions-1IZ8B6HR1NHF9"),
+        //         new KeyValuePair<string, string>("/FromEmail", "patty.ramert@gmail.com"),
+        //         new KeyValuePair<string, string>("/YouTubeApiKey", "REDACTED")
+        //     }));
+        //     var snsEvent = new SNSEvent {Records = new List<SNSEvent.SNSRecord> {new SNSEvent.SNSRecord {Sns = new SNSEvent.SNSMessage {Message = "{\"Key\": \"patty.ramert@gmail.com\",\"Value\": [{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"electro 2016\",\"finalEmail\": null,\"timestamp\": null},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"Vocal HTC\",\"finalEmail\": null,\"timestamp\": null},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"Fyre!\",\"finalEmail\": null,\"timestamp\": null},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"Trance/House\",\"finalEmail\": null,\"timestamp\": null},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"Comedy\",\"finalEmail\": null,\"timestamp\": null},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"amazing\",\"finalEmail\": null,\"timestamp\": null},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"music\",\"finalEmail\": null,\"timestamp\": null}]}",}}}};
+        //     var function = new Function();
+        //     await function.InitializeAsync(config);
+        //     await function.ProcessMessageAsync(snsEvent);
+        // }
         // var provider = new Mock<IDependencyProvider>(MockBehavior.Strict);
             //     provider.SetupSequence(x => x.YouTubeApiChannelSnippetAsync(It.Is<string>(y => y.StartsWith("foo-username"))))
             //         .Returns(Task.FromResult(youtubeChannelListResponse1))
