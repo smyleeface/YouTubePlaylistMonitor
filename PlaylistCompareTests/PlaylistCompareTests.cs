@@ -8,6 +8,7 @@ using Google.Apis.YouTube.v3.Data;
 using LambdaSharp;
 using LambdaSharp.ConfigSource;
 using LambdaSharp.Logger;
+using LambdaSharp.Records;
 using Moq;
 using Smylee.PlaylistMonitor.PlaylistMonitor;
 using Xunit;
@@ -16,6 +17,9 @@ namespace Smylee.YouTube.PlaylistCompare.PlaylistCompareTests {
 
     public class Logger : ILambdaLogLevelLogger {
         public void Log(LambdaLogLevel level, Exception exception, string format, params object[] arguments) {}
+        public void LogRecord(ALambdaRecord record) {
+            throw new NotImplementedException();
+        }
     }
 
     public class Tests {

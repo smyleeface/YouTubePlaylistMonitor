@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <Deterministic>true</Deterministic>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
@@ -10,16 +10,7 @@
     <NoWarn>CS1998</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Amazon.Lambda.Core" Version="1.1.0" />
-    <PackageReference Include="Amazon.Lambda.Serialization.Json" Version="1.7.0" />
-    <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.3.101.117" />
-    <PackageReference Include="xunit" Version="2.4.1" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.3.104.14" />
-    <PackageReference Include="AWSSDK.SimpleEmailV2" Version="3.3.102.11" />
-    <PackageReference Include="Google.Apis.YouTube.v3" Version="1.42.0.1758" />
-    <PackageReference Include="LambdaSharp" Version="0.7.0.*" />
+    <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.3.101.172" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PlaylistMonitor.Library\PlaylistMonitor.Library.csproj" />

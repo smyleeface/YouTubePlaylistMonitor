@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Amazon.DynamoDBv2.Model;
 using Amazon.SimpleNotificationService.Model;
 using LambdaSharp.Logger;
+using LambdaSharp.Records;
 using Moq;
 using Newtonsoft.Json;
 using Smylee.PlaylistMonitor.PlaylistMonitor;
@@ -14,6 +15,9 @@ namespace Smylee.PlaylistMonitor.PlaylistMonitorTests {
 
     public class Logger : ILambdaLogLevelLogger {
         public void Log(LambdaLogLevel level, Exception exception, string format, params object[] arguments) {}
+        public void LogRecord(ALambdaRecord record) {
+            throw new NotImplementedException();
+        }
     }
     
     public class Tests {

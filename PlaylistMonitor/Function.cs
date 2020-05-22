@@ -1,12 +1,8 @@
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
-using Amazon.Lambda.Core;
 using Amazon.SimpleNotificationService;
 using LambdaSharp;
 using LambdaSharp.Schedule;
-
-// Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
-[assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.Json.JsonSerializer))]
 
 namespace Smylee.PlaylistMonitor.PlaylistMonitor {
 

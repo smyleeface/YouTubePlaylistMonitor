@@ -29,6 +29,7 @@ namespace Smylee.YouTube.PlaylistCompare {
             var dateNowString = dateNow.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture);
             var finalEmail = $"<h1>Playlist Monitor Report for {dateNowString}</h1><br /><br />";
             var updateDatabase = new List<Task>();
+            var changesFromPrevious = false;
             
             // check each playlist
             // requestedPlaylists.ForEach(async playlist => {
@@ -58,6 +59,11 @@ namespace Smylee.YouTube.PlaylistCompare {
                 finalEmail += $"<h2>{playlistTitle} playlist by {channelSnippet.Title}</h2><br /><br />" + 
                               Comparison.Report(playlistTitle, oldPlaylistItems, currentPlaylistItems);
 
+                // if there were any changes, or this is the first run, an email should be sent
+                if(oldPlaylistItems == null || !oldPlaylistItems.Equals(currentPlaylistItems)) {
+                    changesFromPrevious = true;
+                }
+                
                 // log data for database entry later
                 // TODO: turn this into batch write requests
                 updateDatabase.Add(_dataAccess.UpdatePlaylistItemDataFromCacheAsync(channelId, playlistTitle, currentPlaylistItems));
@@ -65,9 +71,12 @@ namespace Smylee.YouTube.PlaylistCompare {
             
             // update database
             Task.WaitAll(updateDatabase.ToArray());
-            
-            // send email
-            await _dataAccess.SendEmailAsync(_fromEmail, requestEmail, $"YouTube Playlist report for {dateNowString}", finalEmail);
+
+            if (changesFromPrevious) {
+                
+                // send email
+                await _dataAccess.SendEmailAsync(_fromEmail, requestEmail, $"YouTube Playlist report for {dateNowString}", finalEmail);
+            }
             
             // update subscription with last email sent content
             await _dataAccess.UpdateSubscriptionCacheAsync(requestEmail, finalEmail);
