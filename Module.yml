@@ -2,13 +2,13 @@
 Module: Smylee.PlaylistMonitor
 
 # The Module Version is shown in the CloudFormation stack and Lambda function descriptions.
-Version: 1.0
+Version: 1.1
 
 # The Module Description is shown in the AWS CloudFormation console with the version number.
 Description: Module description
 
-Secrets:
-  - alias/SmyleeDev
+#Secrets:
+#  - alias/SmyleeDev
 
 # The Items section defines values and resources for the module.
 Items:
