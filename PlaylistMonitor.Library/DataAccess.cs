@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using Amazon.DynamoDBv2.Model;
 using Google.Apis.YouTube.v3.Data;
 using Newtonsoft.Json;
-using Smylee.YouTube.PlaylistMonitor.Library.Models;
+using Smylee.PlaylistMonitor.Library.Models;
 
-namespace Smylee.YouTube.PlaylistMonitor.Library {
+namespace Smylee.PlaylistMonitor.Library {
 
     public class DataAccess {
         private readonly IDependencyProvider _provider;

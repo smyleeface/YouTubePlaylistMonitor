@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Amazon.DynamoDBv2.Model;
 using Google.Apis.YouTube.v3.Data;
-using Smylee.YouTube.PlaylistMonitor.Library.Models;
+using Smylee.PlaylistMonitor.Library.Models;
 
-namespace Smylee.YouTube.PlaylistMonitor.Library {
+namespace Smylee.PlaylistMonitor.Library {
 
     public static class PlaylistMonitorEx {
         public static ChannelSnippetDb ToChannelSnippetDb(this ChannelSnippet channelSnippet) {

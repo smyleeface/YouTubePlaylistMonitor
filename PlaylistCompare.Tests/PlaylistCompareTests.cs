@@ -1,19 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Amazon.DynamoDBv2;
-using Amazon.DynamoDBv2.Model;
-using Amazon.Lambda.SNSEvents;
-using Google.Apis.YouTube.v3.Data;
-using LambdaSharp;
-using LambdaSharp.ConfigSource;
 using LambdaSharp.Logger;
 using LambdaSharp.Records;
-using Moq;
-using Smylee.PlaylistMonitor.PlaylistMonitor;
 using Xunit;
 
-namespace Smylee.YouTube.PlaylistCompare.PlaylistCompareTests {
+namespace Smylee.PlaylistMonitor.PlaylistCompare.Tests {
 
     public class Logger : ILambdaLogLevelLogger {
         public void Log(LambdaLogLevel level, Exception exception, string format, params object[] arguments) {}
@@ -22,8 +13,12 @@ namespace Smylee.YouTube.PlaylistCompare.PlaylistCompareTests {
         }
     }
 
-    public class Tests {
-
+    public class PlaylistCompareTests {
+        
+        [Fact]
+        public async Task PlaylistCompareLogicTest() {
+            Assert.True(true);
+        }
         // [Fact]
         // public async Task LogicFunctionalTest() {
         //     var config = new LambdaConfig(new LambdaDictionarySource(new List<KeyValuePair<string, string>> {

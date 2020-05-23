@@ -9,11 +9,11 @@ using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
 using LambdaSharp;
 using Newtonsoft.Json;
-using Smylee.YouTube.PlaylistMonitor.Library;
-using Smylee.YouTube.PlaylistMonitor.Library.Models;
-using DependencyProvider = Smylee.YouTube.PlaylistMonitor.Library.DependencyProvider;
+using Smylee.PlaylistMonitor.Library;
+using Smylee.PlaylistMonitor.Library.Models;
+using DependencyProvider = Smylee.PlaylistMonitor.Library.DependencyProvider;
 
-namespace Smylee.YouTube.PlaylistCompare {
+namespace Smylee.PlaylistMonitor.PlaylistCompare {
 
     // public class Function : ALambdaTopicFunction<Dictionary<string, List<PlaylistMonitorSubscription>>> {
     public class Function : ALambdaFunction<SNSEvent, string> {

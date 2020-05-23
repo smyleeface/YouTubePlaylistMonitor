@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace Smylee.YouTube.PlaylistMonitor.Library.Models {
+namespace Smylee.PlaylistMonitor.Library.Models {
 
     public class PlaylistSnippetDb {
         

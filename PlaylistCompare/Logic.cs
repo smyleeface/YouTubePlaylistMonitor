@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
 using LambdaSharp.Logger;
-using Smylee.YouTube.PlaylistMonitor.Library;
-using Smylee.YouTube.PlaylistMonitor.Library.Models;
+using Smylee.PlaylistMonitor.Library;
+using Smylee.PlaylistMonitor.Library.Models;
 
-namespace Smylee.YouTube.PlaylistCompare {
+namespace Smylee.PlaylistMonitor.PlaylistCompare {
 
     public class Logic {
 

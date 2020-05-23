@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
-using Smylee.YouTube.PlaylistMonitor.Library.Models;
+using Smylee.PlaylistMonitor.Library.Models;
 
-namespace Smylee.YouTube.PlaylistCompare {
+namespace Smylee.PlaylistMonitor.PlaylistCompare {
 
     public static class Comparison {
 

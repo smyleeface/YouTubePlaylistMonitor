@@ -4,7 +4,7 @@
     <Deterministic>true</Deterministic>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
-    <RootNamespace>Smylee.YouTube.PlaylistMonitor.Library</RootNamespace>
+    <RootNamespace>Smylee.PlaylistMonitor.Library</RootNamespace>
     <AWSProjectType>Lambda</AWSProjectType>
     <IsTestProject>false</IsTestProject>
     <NoWarn>CS1998</NoWarn>

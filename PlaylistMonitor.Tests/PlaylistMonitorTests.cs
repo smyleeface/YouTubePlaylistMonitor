@@ -5,13 +5,11 @@ using Amazon.DynamoDBv2.Model;
 using Amazon.SimpleNotificationService.Model;
 using LambdaSharp.Logger;
 using LambdaSharp.Records;
-using Moq;
 using Newtonsoft.Json;
 using Smylee.PlaylistMonitor.PlaylistMonitor;
-using Smylee.YouTube.PlaylistMonitor.Library.Models;
 using Xunit;
 
-namespace Smylee.PlaylistMonitor.PlaylistMonitorTests {
+namespace Smylee.PlaylistMonitor.PlaylistMonitor.Tests {
 
     public class Logger : ILambdaLogLevelLogger {
         public void Log(LambdaLogLevel level, Exception exception, string format, params object[] arguments) {}
@@ -20,7 +18,12 @@ namespace Smylee.PlaylistMonitor.PlaylistMonitorTests {
         }
     }
     
-    public class Tests {
+    public class PlaylistMonitorTests {
+
+        [Fact]
+        public async Task LogicTest() {
+            Assert.True(true);
+        }
 
         // [Fact]
         // public async Task LogicTest() {
