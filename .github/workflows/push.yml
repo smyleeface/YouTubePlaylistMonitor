@@ -1,9 +1,9 @@
-name: Run Tests
+name: Push Workflow
 
 on: push
 
 jobs:
-  dotnet:
+  tests:
 
     runs-on: ubuntu-latest
 
