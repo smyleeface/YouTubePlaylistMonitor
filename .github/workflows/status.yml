@@ -1,0 +1,19 @@
+name: Status Workflow
+
+on: status
+
+jobs:
+  create deployment on success:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install wget & curl
+        run: apt-get install wget curl jq
+        
+      - name: Create a Deploy on success status
+        if: github.status.state == success
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl -X POST https://api.github.com/repos/${GITHUB_REPOSITORY}/deployments -H "Authorization: Token ${GITHUB_TOKEN}" -d "{\n\"ref\": \"${GITHUB_SHA}\",\n\"environment\": \"staging\",\n\"transient_environment\": \"true\",\n\"production_environment\": \"false\"\n}" > deployment_data.json
