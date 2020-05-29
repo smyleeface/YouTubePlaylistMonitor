@@ -21,8 +21,6 @@ jobs:
         run: |
           set +e
           dotnet test
-          curl -X POST ${API_PATH} -H "Authorization: Token ${TOKEN_FOR_GITHUB}" -d "{\"state\": \"success\",\"description\": \"Tests passed!\",\"context\": \"push-workflow/github\"}"
-          
-  
-          
+          echo ${API_PATH}
+        #curl -X POST ${API_PATH} -H "Authorization: Token ${TOKEN_FOR_GITHUB}" -d "{\"state\": \"success\",\"description\": \"Tests passed!\",\"context\": \"push-workflow/github\"}"         
           
