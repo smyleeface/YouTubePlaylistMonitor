@@ -17,12 +17,12 @@ jobs:
         working-directory: ${{ github.workspace }}
         env:
           TOKEN_FOR_GITHUB: ${{ secrets.GITHUB_TOKEN }}
-          API_PATH: ${GITHUB_REPOSITORY}/statuses/${GITHUB_SHA}
+          API_PATH: https://api.github.com/repos/${GITHUB_REPOSITORY}/statuses/${GITHUB_SHA}
         run: |
           set +e
           dotnet test
-          curl -X POST https://api.github.com/repos/${GITHUB_REPOSITORY}/${API_PATH} -H "Authorization: Token ${TOKEN_FOR_GITHUB}" -d "{\"state\": \"success\",\"description\": \"Tests passed!\",\"context\": \"push-workflow/github\"}"
+          curl -X POST ${API_PATH} -H "Authorization: Token ${TOKEN_FOR_GITHUB}" -d "{\"state\": \"success\",\"description\": \"Tests passed!\",\"context\": \"push-workflow/github\"}"
           
-          
+  
           
           
