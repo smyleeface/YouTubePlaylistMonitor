@@ -29,7 +29,7 @@ namespace Smylee.PlaylistMonitor.PlaylistCompare {
             var dateNowString = dateNow.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture);
             var finalEmail = $"<h1>Playlist Monitor Report for {dateNowString}</h1><br /><br />";
             var updateDatabase = new List<Task>();
-            var changesFromPrevious = false;
+            var changesFromPrevious = new List<bool>();
             
             // check each playlist
             // requestedPlaylists.ForEach(async playlist => {
@@ -60,8 +60,10 @@ namespace Smylee.PlaylistMonitor.PlaylistCompare {
                               Comparison.Report(playlistTitle, oldPlaylistItems, currentPlaylistItems);
 
                 // if there were any changes, or this is the first run, an email should be sent
-                if(oldPlaylistItems == null || !oldPlaylistItems.Equals(currentPlaylistItems)) {
-                    changesFromPrevious = true;
+                if(oldPlaylistItems == null || !oldPlaylistItems.IsSame(currentPlaylistItems)) {
+                    changesFromPrevious.Add(true);
+                } else {
+                    changesFromPrevious.Add(false);
                 }
                 
                 // log data for database entry later
@@ -72,7 +74,7 @@ namespace Smylee.PlaylistMonitor.PlaylistCompare {
             // update database
             Task.WaitAll(updateDatabase.ToArray());
 
-            if (changesFromPrevious) {
+            if (changesFromPrevious.Contains(true)) {
                 
                 // send email
                 await _dataAccess.SendEmailAsync(_fromEmail, requestEmail, $"YouTube Playlist report for {dateNowString}", finalEmail);

@@ -1,12 +1,24 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Google.Apis.YouTube.v3.Data;
 using Newtonsoft.Json;
 using Smylee.PlaylistMonitor.Library.Models;
 
 namespace Smylee.PlaylistMonitor.PlaylistCompare {
 
     public static class Comparison {
+
+        public static bool IsSame(this List<PlaylistItemsSnippetDb> listPlaylistItems, List<PlaylistItemsSnippetDb> compareList) {
+            foreach (var playlistItem in listPlaylistItems) {
+                var foundId = compareList.Exists(x => x.Id == playlistItem.Id);
+                var foundChannelId = compareList.Exists(x => x.ChannelId == playlistItem.ChannelId);
+                if (!foundId || !foundChannelId) {
+                    return false;
+                }
+            }
+            return true;
+        }
 
         public static string Report(string playlistTitle, List<PlaylistItemsSnippetDb> cachedPlaylistItems, List<PlaylistItemsSnippetDb> currentPlaylistItems) {
             var deletedReport = DeletedReport(playlistTitle, cachedPlaylistItems, currentPlaylistItems);
