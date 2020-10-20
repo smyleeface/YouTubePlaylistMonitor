@@ -27,7 +27,7 @@ namespace Smylee.PlaylistMonitor.PlaylistCompare {
                  
             // init
             var dateNowString = dateNow.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture);
-            var finalEmail = $"<h1>Playlist Monitor Report for {dateNowString}</h1><br /><br />";
+            var finalEmail = new GenerateEmail(dateNowString,$"Playlist Monitor Report for {dateNowString}");
             var updateDatabase = new List<Task>();
             var changesFromPrevious = new List<bool>();
             
@@ -55,16 +55,15 @@ namespace Smylee.PlaylistMonitor.PlaylistCompare {
                 // get existing data from youtube
                 var currentPlaylistItems = await _dataAccess.GetRecentPlaylistItemDataAsync(playlistData.Id);
                 
+                // filter the lists
+                var deletedItems = Comparison.DeletedItems(oldPlaylistItems, currentPlaylistItems);
+                var addedItems = Comparison.AddedItems(oldPlaylistItems, currentPlaylistItems); 
+                
                 // generate the comparison report
-                finalEmail += $"<h2>{playlistTitle} playlist by {channelSnippet.Title}</h2><br /><br />" + 
-                              Comparison.Report(playlistTitle, oldPlaylistItems, currentPlaylistItems);
+                finalEmail.AddCard(playlistTitle, channelSnippet.Title, deletedItems, addedItems);
 
                 // if there were any changes, or this is the first run, an email should be sent
-                if(oldPlaylistItems == null || !oldPlaylistItems.IsSame(currentPlaylistItems)) {
-                    changesFromPrevious.Add(true);
-                } else {
-                    changesFromPrevious.Add(false);
-                }
+                changesFromPrevious.Add(oldPlaylistItems == null || !oldPlaylistItems.IsSame(currentPlaylistItems));
                 
                 // log data for database entry later
                 // TODO: turn this into batch write requests
@@ -77,11 +76,11 @@ namespace Smylee.PlaylistMonitor.PlaylistCompare {
             if (changesFromPrevious.Contains(true)) {
                 
                 // send email
-                await _dataAccess.SendEmailAsync(_fromEmail, requestEmail, $"YouTube Playlist report for {dateNowString}", finalEmail);
+                await _dataAccess.SendEmailAsync(_fromEmail, requestEmail, $"YouTube Playlist report for {dateNowString}", finalEmail.Html);
             }
             
             // update subscription with last email sent content
-            await _dataAccess.UpdateSubscriptionCacheAsync(requestEmail, finalEmail);
+            await _dataAccess.UpdateSubscriptionCacheAsync(requestEmail, finalEmail.Html);
         }
     }
 }
