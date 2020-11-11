@@ -10,7 +10,7 @@
     <NoWarn>CS1998</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.3.101.172" />
+    <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.5.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PlaylistMonitor.Library\PlaylistMonitor.Library.csproj" />

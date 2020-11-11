@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using LambdaSharp.Logger;
+using LambdaSharp.Logging;
 using Newtonsoft.Json;
 using Smylee.PlaylistMonitor.Library.Models;
 
@@ -9,11 +9,11 @@ namespace Smylee.PlaylistMonitor.PlaylistMonitor {
 
     public class Logic {
 
-        private readonly ILambdaLogLevelLogger _logger;
+        private readonly ILambdaSharpLogger _logger;
         private readonly IDependencyProvider _provider;
 
         //--- Methods ---
-        public Logic(IDependencyProvider provider, ILambdaLogLevelLogger logger) {
+        public Logic(IDependencyProvider provider, ILambdaSharpLogger logger) {
             _provider = provider;
             _logger = logger;
         }

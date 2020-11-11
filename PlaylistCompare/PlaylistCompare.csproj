@@ -10,9 +10,6 @@
     <NoWarn>CS1998</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="AWSSDK.SimpleEmailV2" Version="3.3.102.72" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\PlaylistMonitor.Library\PlaylistMonitor.Library.csproj" />
     <ProjectReference Include="..\PlaylistMonitor\PlaylistMonitor.csproj" />
   </ItemGroup>

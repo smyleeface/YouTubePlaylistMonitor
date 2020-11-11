@@ -1,45 +1,34 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml;
 using Smylee.PlaylistMonitor.Library.Models;
 
 namespace Smylee.PlaylistMonitor.PlaylistCompare {
 
     public class GenerateEmail {
-        
-        private XmlDocument _emailXml;
+
+        private string _email;
+        private readonly string _subjectTitle;
+        private readonly string _dateNowString;
 
         public GenerateEmail(string dateNowString, string subjectTitle) {
-            _emailXml = new XmlDocument();
-            _emailXml.Load("emailTemplate.html");
-            _emailXml.DocumentElement.SelectSingleNode("//div[@class=\"container\"]/h1").InnerText = string.Format(subjectTitle, dateNowString);
+            _subjectTitle = subjectTitle;
+            _dateNowString = dateNowString;
+            _email = "";
         }
 
-        public string Html => _emailXml.DocumentElement.InnerXml;
+        public string Html => $"<div style=\"font-family: Arial;\"><h1>{string.Format(_subjectTitle, _dateNowString)}</h1>{_email}</div>";
 
         public void AddCard(string playlistTitle, string playlistAuthor, List<PlaylistItemsSnippetDb> deletedItems, List<PlaylistItemsSnippetDb> addedItems) {
-            
-            // generate card parts
             var headerContent = CardHeader(playlistTitle, playlistAuthor);
             var bodyContent = CardBody(deletedItems, addedItems);
             var footerContent = CardFooter(deletedItems, addedItems);
-            
-            // create an xml row for the playlist
-            var playlistRow = _emailXml.CreateElement("div");
-            playlistRow.SetAttribute("class", "row");
-            playlistRow.InnerXml = $"<div class=\"col\"><div class=\"card text-left\"><div class=\"card-header\">{headerContent}</div><div class=\"card-body\"><div class=\"card-text\"><div class=\"playlist-changes\">{bodyContent}</div></div></div><div class=\"card-footer text-muted text-monospace\">{footerContent}</div></div></div>";
-            
-            // Add to the emailTemplate
-            var emailBody = _emailXml.DocumentElement.SelectSingleNode("//div[@class=\"container\"]");
-            emailBody.AppendChild(playlistRow);
+            _email += $"<div style=\"border: 1px solid grey;\">{headerContent}{bodyContent}{footerContent}</div>";
         }
 
         private string CardHeader(string playlistTitle, string playlistAuthor) {
-            var output = $"<h2>{playlistTitle}</h2>";
-            output += $"<h6 class=\"card-subtitle mb-2 text-muted\">by {playlistAuthor}</h6>";
-            return output;
+            return $"<div style=\"background-color: whitesmoke; padding: 10px 15px;\"><h2 style=\"margin: 0;\">{playlistTitle}</h2><div class=\"byline\">by {playlistAuthor}</div></div>";
         }
-        
+
         private string CardBody(List<PlaylistItemsSnippetDb> deletedItems, List<PlaylistItemsSnippetDb> addedItems) {
             var playlistItems = "";
             var index = 0;
@@ -47,37 +36,42 @@ namespace Smylee.PlaylistMonitor.PlaylistCompare {
             var deleteStopCounter = 0;
             var combinedItems = deletedItems.Concat(addedItems).ToList();
             foreach (var itemGroup in combinedItems.GroupBy(x => index++ / 2).ToList()) {
-                var unorderedList = _emailXml.CreateElement("ul");
-                unorderedList.SetAttribute("class", "list-group");
+                var unorderedList = "";
                 foreach (var item in itemGroup) {
                     deleteStopCounter++;
-                    XmlElement liList;
-                    liList = CardBodyListItem(item, deleteStopCounter > deleteStopItemCount ? "success" : "danger");
-                    unorderedList.InnerXml += liList.OuterXml;
+                    if (deleteStopCounter > deleteStopItemCount) {
+                        unorderedList += CardBodyListItemAdded(item);
+                    } else {
+                        unorderedList += CardBodyListItemDeleted(item);
+                    }
                 }
-                playlistItems += unorderedList.OuterXml;
+                playlistItems += $"<ul style=\"margin: 0; padding: 0;\">{unorderedList}</ul>";
             }
-            return playlistItems;
+            return $"<div class=\"playlist-body\">{playlistItems}</div>";
         }
 
-        private XmlElement CardBodyListItem(PlaylistItemsSnippetDb item, string style) {
-            var liList = _emailXml.CreateElement("li");
-            liList.SetAttribute("class", "list-group-item col-md-6 playlist-item");
+        private string CardBodyListItemDeleted(PlaylistItemsSnippetDb item) {
             var output = "";
-            output += $"<strong><a href=\"https://www.youtube.com/watch?v={item.Id}\" class=\"alert-link\">{item.Title}</a></strong><br />";
-            output += $"by <a href=\"https://www.youtube.com/channel/{item.ChannelId}\" class=\"alert-link\">{item.ChannelTitle}</a><br />"; 
+            output += $"<strong><a href=\"https://www.youtube.com/watch?v={item.Id}\" style=\"color: #6d1223; text-decoration: none;\">{item.Title}</a></strong><br />";
+            output += $"by <a href=\"https://www.youtube.com/channel/{item.ChannelId}\" style=\"color: #6d1223; text-decoration: none;\">{item.ChannelTitle}</a><br />";
             if (!string.IsNullOrEmpty(item.Description)) {
-                output += $"<details><summary>Description</summary>{item.Description}</details>";
+                output += $"<div><strong>Description</strong><br><div>{item.Description.Replace("\n", "</div><div>")}</div></div>";
             }
-            liList.InnerXml = $"<div class=\"alert alert-{style}\" role=\"alert\">{output}</div>";
-            return liList;
+            return $"<li style=\"width: 97%;list-style: none;margin-left: 15px;margin-top: 15px;\"><div style=\"padding: 15px; background-color: #ffdddd; border: 1px solid #e09a9a;\">{output}</div></li>";
+        }
+
+        private string CardBodyListItemAdded(PlaylistItemsSnippetDb item) {
+            var output = "";
+            output += $"<strong><a href=\"https://www.youtube.com/watch?v={item.Id}\" style=\"color: green; text-decoration: none;\">{item.Title}</a></strong><br />";
+            output += $"by <a href=\"https://www.youtube.com/channel/{item.ChannelId}\" style=\"color: green; text-decoration: none;\">{item.ChannelTitle}</a><br />";
+            if (!string.IsNullOrEmpty(item.Description)) {
+                output += $"<div><strong>Description</strong><br><div>{item.Description.Replace("\n", "</div><div>")}</div></div>";
+            }
+            return $"<li style=\"width: 97%;list-style: none;margin-left: 15px;margin-top: 15px;\"><div style=\"padding: 15px; background-color: #ddffe0; border: 1px solid green;\">{output}</div></li>";
         }
 
         private string CardFooter(List<PlaylistItemsSnippetDb> deletedItems, List<PlaylistItemsSnippetDb> addedItems) {
-            return $"-{deletedItems.Count} | +{addedItems.Count}";
+            return $"<div style=\"background-color: whitesmoke; padding: 15px; margin-top: 15px;\">-{deletedItems.Count} | +{addedItems.Count}</div>";
         }
-
     }
-    
 }
-

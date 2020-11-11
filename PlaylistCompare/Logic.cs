@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
-using LambdaSharp.Logger;
+using LambdaSharp.Logging;
 using Smylee.PlaylistMonitor.Library;
 using Smylee.PlaylistMonitor.Library.Models;
 
@@ -10,12 +10,12 @@ namespace Smylee.PlaylistMonitor.PlaylistCompare {
 
     public class Logic {
 
-        private readonly ILambdaLogLevelLogger _logger;
+        private readonly ILambdaSharpLogger _logger;
         private readonly DataAccess _dataAccess;
         private string _fromEmail;
 
         //--- Methods ---
-        public Logic(string fromEmail, DataAccess dataAccess, ILambdaLogLevelLogger logger) {
+        public Logic(string fromEmail, DataAccess dataAccess, ILambdaSharpLogger logger) {
             _dataAccess = dataAccess;
             _logger = logger;
             _fromEmail = fromEmail;
@@ -71,16 +71,21 @@ namespace Smylee.PlaylistMonitor.PlaylistCompare {
             }
             
             // update database
+            _logger.Log(LambdaLogLevel.INFO, null, "updating database");
             Task.WaitAll(updateDatabase.ToArray());
 
             if (changesFromPrevious.Contains(true)) {
                 
                 // send email
+                _logger.Log(LambdaLogLevel.INFO, null, "sending email");
                 await _dataAccess.SendEmailAsync(_fromEmail, requestEmail, $"YouTube Playlist report for {dateNowString}", finalEmail.Html);
+                
+                // update subscription with last email sent content
+                _logger.Log(LambdaLogLevel.INFO, null, "saving email content");
+                await _dataAccess.UpdateSubscriptionCacheAsync(requestEmail, finalEmail.Html);
             }
             
-            // update subscription with last email sent content
-            await _dataAccess.UpdateSubscriptionCacheAsync(requestEmail, finalEmail.Html);
+            _logger.Log(LambdaLogLevel.INFO, null, "complete");
         }
     }
 }
