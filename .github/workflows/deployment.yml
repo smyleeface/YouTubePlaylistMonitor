@@ -1,0 +1,53 @@
+#name: Deployment Workflow
+#
+#on: deployment
+#
+#jobs:
+#  deploy to staging:
+#
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - env:
+#          DEPLOYMENT_ID: ${deployment.id}
+#          AWS_ACCESS_KEY_ID: ${STAGING_AWS_ID}
+#          AWS_SECRET_ACCESS_KEY: ${STAGING_AWS_SECRET}
+#          GITHUB_ROLE_ARN: ${STAGING_GITHUB_ROLE_ARN}
+#      - name: print values
+#        run: |
+#          echo ${DEPLOYMENT_ID}
+#
+## # install packages
+##  wget https://packages.microsoft.com/config/ubuntu/19.10/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+##  dpkg -i packages-microsoft-prod.deb
+##  apt-get update
+##  apt-get install apt-transport-https
+##  apt-get install dotnet-sdk-3.1
+##  apt-get install wget curl jq python3 python3-pip
+##  apt-get clean
+##
+##  # install tools
+##  pip3 install awscli
+##  dotnet tool install -g LambdaSharp.Tool
+##
+##  # set env variables
+##  export AWS_ACCESS_KEY_ID=${STAGING_AWS_ID}
+##  export AWS_SECRET_ACCESS_KEY=${STAGING_AWS_SECRET}
+##  export GITHUB_ROLE_ARN=${STAGING_GITHUB_ROLE_ARN}
+##  export LAMBDASHARP_TIER=Staging
+##
+##  # get credentials for access to deploy
+##  credentials=$(aws sts assume-role --role-arn "${STAGING_GITHUB_ROLE_ARN}" --role-session-name "${GITHUB_SHA}")
+##  export AWS_ACCESS_KEY_ID=$(echo ${credentials} | jq -r '.Credentials.AccessKeyId')
+##  export AWS_SECRET_ACCESS_KEY=$(echo ${credentials} | jq -r '.Credentials.SecretAccessKey')
+##  export AWS_SESSION_TOKEN=$(echo ${credentials} | jq -r '.Credentials.SessionToken')
+##
+##  # lash install
+##  lash publish --tier Staging
+##  curl -X POST https://api.github.com/repos/${GITHUB_REPOSITORY}/deployments -H "Authorization: Token ${GITHUB_TOKEN}" -d "{\n\"ref\": \"${GITHUB_SHA}\",\n\"environment\": \"staging\",\n\"transient_environment\": \"true\",\n\"production_environment\": \"false\"\n}"
+##  lash deploy --tier Staging
+##  Create Deployment Status - in progress (parallel with lash deploy)
+##  if lash deploy ok
+##  Create Deployment Status - success
+##  else
+##  Create Deployment Status - failure

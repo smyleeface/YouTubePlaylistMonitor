@@ -13,9 +13,4 @@
     <ProjectReference Include="..\PlaylistMonitor.Library\PlaylistMonitor.Library.csproj" />
     <ProjectReference Include="..\PlaylistMonitor\PlaylistMonitor.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="emailTemplate.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
 </Project>

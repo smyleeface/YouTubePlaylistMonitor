@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
 using LambdaSharp.Logging;
@@ -9,45 +10,95 @@ using Smylee.PlaylistMonitor.Library.Models;
 using Xunit;
 
 namespace Smylee.PlaylistMonitor.PlaylistCompare.Tests {
-    public class PlaylistCompareTests {
-        
+
+    public class GenerateEmailTests {
+
         [Fact]
-        public async Task PlaylistCompareLogicTest() {
-            
-            var email = new GenerateEmail("Playlist monitor report");
+        public async Task HtmlTest() {
+            var emailSubject = "Playlist monitor report";
+            var generateEmail = new GenerateEmail(emailSubject);
+            Assert.Contains(emailSubject, generateEmail.Html);
+        }
+
+        [Fact]
+        public async Task AddCardTest() {
             var deletedList = new List<PlaylistItemsSnippetDb> {
                 new PlaylistItemsSnippetDb {
-                    Title = "foo-playlist3-item5",
-                    Description = "foo-bar-description3"
+                    Title = "deleted item 1",
+                    Description = "deleted item description 1"
                 },
                 new PlaylistItemsSnippetDb {
-                    Title = "foo-playlist3-item5",
-                    Description = "foo-bar-description3"
+                    Title = "deleted item 2",
+                    Description = "deleted item description 2"
                 },
                 new PlaylistItemsSnippetDb {
-                    Title = "foo-playlist3-item5",
-                    Description = "foo-bar-description3"
+                    Title = "deleted item 3",
+                    Description = "deleted item description 3"
                 }
             };
             var addedList = new List<PlaylistItemsSnippetDb> {
                 new PlaylistItemsSnippetDb {
-                    Title = "foo-playlist3-item5",
-                    Description = "foo-bar-description3"
+                    Title = "added item 1",
+                    Description = "added item description 1"
                 },
                 new PlaylistItemsSnippetDb {
-                    Title = "foo-playlist3-item5",
-                    Description = "foo-bar-description3"
+                    Title = "added item 2",
+                    Description = "added item description 2"
                 },
                 new PlaylistItemsSnippetDb {
-                    Title = "foo-playlist3-item5",
-                    Description = "foo-bar-description3"
+                    Title = "added item 3",
+                    Description = "added item description 3"
                 }
             };
-            email.AddCard("Playlist Title", "author", deletedList, addedList);
-            var testing = email.Html;
-            // email.PlaylistReport("dplaylist Title", "playlist author", new List<PlaylistItemsSnippetDb>(), new List<PlaylistItemsSnippetDb>());
+            var playlistTitle = "playlist title";
+            var playlistAuthor = "playlist author";
+            var generateEmail = new GenerateEmail("foo-bar");
+            generateEmail.AddCard(playlistTitle, playlistAuthor, deletedList, addedList);
+            Assert.Contains(playlistTitle, generateEmail.Html);
+            Assert.Contains(playlistAuthor, generateEmail.Html);
+            Assert.Contains(addedList.First().Title, generateEmail.Html);
+            Assert.Contains(deletedList.First().Title, generateEmail.Html);
+        }
 
-            XmlDocument emailTemplate = new XmlDocument();
+        // [Fact]
+        // public async Task PlaylistCompareLogicTest() {
+        //     
+        //     var dateNow = new DateTime(2020, 1, 4, 6, 4,30).Date.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture);
+        //     var emailSubject = "Playlist monitor report";
+        //     var generateEmail = new GenerateEmail(dateNow, emailSubject);
+        //     var deletedList = new List<PlaylistItemsSnippetDb> {
+        //         new PlaylistItemsSnippetDb {
+        //             Title = "deleted item 1",
+        //             Description = "deleted item description 1"
+        //         },
+        //         new PlaylistItemsSnippetDb {
+        //             Title = "deleted item 2",
+        //             Description = "deleted item description 2"
+        //         },
+        //         new PlaylistItemsSnippetDb {
+        //             Title = "deleted item 3",
+        //             Description = "deleted item description 3"
+        //         }
+        //     };
+        //     var addedList = new List<PlaylistItemsSnippetDb> {
+        //         new PlaylistItemsSnippetDb {
+        //             Title = "added item 1",
+        //             Description = "added item description 1"
+        //         },
+        //         new PlaylistItemsSnippetDb {
+        //             Title = "added item 2",
+        //             Description = "added item description 2"
+        //         },
+        //         new PlaylistItemsSnippetDb {
+        //             Title = "added item 3",
+        //             Description = "added item\ndescription 3"
+        //         }
+        //     };
+        //     generateEmail.AddCard("Playlist Title", "author name", deletedList, addedList);
+        //     var htmlEmail = generateEmail.Html;
+        //     // email.PlaylistReport("dplaylist Title", "playlist author", new List<PlaylistItemsSnippetDb>(), new List<PlaylistItemsSnippetDb>());
+        //
+        //     XmlDocument emailTemplate = new XmlDocument();
             // emailTemplate.Load("emailTemplate.html");
             // emailTemplate.DocumentElement.SelectSingleNode("//div[@class=\"container\"]/h1").InnerText = "Report Title";
             //
@@ -82,7 +133,7 @@ namespace Smylee.PlaylistMonitor.PlaylistCompare.Tests {
 
 
 
-        }
+        // }
         // [Fact]
         // public async Task LogicFunctionalTest() {
         //     var config = new LambdaConfig(new LambdaDictionarySource(new List<KeyValuePair<string, string>> {

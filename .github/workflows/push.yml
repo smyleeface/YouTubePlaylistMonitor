@@ -21,5 +21,32 @@ jobs:
           set +e
           dotnet test
           export API_PATH="https://api.github.com/repos/${GITHUB_REPOSITORY}/statuses/${GITHUB_SHA}"
-          curl -X POST ${API_PATH} -H "Authorization: Token ${TOKEN_FOR_GITHUB}" -d "{\"state\": \"success\",\"description\": \"Tests passed!\",\"context\": \"push-workflow/github\"}"         
-          
+          curl -X POST ${API_PATH} -H "Authorization: Token ${TOKEN_FOR_GITHUB}" -d "{\"state\": \"success\",\"description\": \"Tests passed!\",\"context\": \"push-workflow/github\"}"
+
+
+
+#name: Push Workflow
+#
+#on: push
+#
+#jobs:
+#  tests:
+#
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - uses: actions/checkout@v2
+#      - name: Setup .NET Core
+#        uses: actions/setup-dotnet@v1
+#        with:
+#          dotnet-version: 3.1.201
+#      - name: Run Tests
+#        working-directory: ${{ github.workspace }}
+#        env:
+#          TOKEN_FOR_GITHUB: ${{ secrets.GITHUB_TOKEN }}
+#        run: |
+#          set +e
+#          dotnet test
+#          export API_PATH="https://api.github.com/repos/${GITHUB_REPOSITORY}/statuses/${GITHUB_SHA}"
+#          curl -X POST ${API_PATH} -H "Authorization: Token ${TOKEN_FOR_GITHUB}" -d "{\"state\": \"success\",\"description\": \"Tests passed!\",\"context\": \"push-workflow/github\"}"
+#

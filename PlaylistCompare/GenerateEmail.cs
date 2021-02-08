@@ -6,23 +6,21 @@ namespace Smylee.PlaylistMonitor.PlaylistCompare {
 
     public class GenerateEmail {
 
-        private string _email;
+        private string _emailBody;
         private readonly string _subjectTitle;
-        private readonly string _dateNowString;
 
-        public GenerateEmail(string dateNowString, string subjectTitle) {
+        public GenerateEmail(string subjectTitle) {
             _subjectTitle = subjectTitle;
-            _dateNowString = dateNowString;
-            _email = "";
+            _emailBody = "";
         }
 
-        public string Html => $"<div style=\"font-family: Arial;\"><h1>{string.Format(_subjectTitle, _dateNowString)}</h1>{_email}</div>";
+        public string Html => $"<div style=\"font-family: Arial;\"><h1>{_subjectTitle}</h1>{_emailBody}</div>";
 
         public void AddCard(string playlistTitle, string playlistAuthor, List<PlaylistItemsSnippetDb> deletedItems, List<PlaylistItemsSnippetDb> addedItems) {
             var headerContent = CardHeader(playlistTitle, playlistAuthor);
             var bodyContent = CardBody(deletedItems, addedItems);
             var footerContent = CardFooter(deletedItems, addedItems);
-            _email += $"<div style=\"border: 1px solid grey;\">{headerContent}{bodyContent}{footerContent}</div>";
+            _emailBody += $"<div style=\"border: 1px solid grey;\">{headerContent}{bodyContent}{footerContent}</div>";
         }
 
         private string CardHeader(string playlistTitle, string playlistAuthor) {

@@ -12,7 +12,7 @@ namespace Smylee.PlaylistMonitor.PlaylistCompare {
 
         private readonly ILambdaSharpLogger _logger;
         private readonly DataAccess _dataAccess;
-        private string _fromEmail;
+        private readonly string _fromEmail;
 
         //--- Methods ---
         public Logic(string fromEmail, DataAccess dataAccess, ILambdaSharpLogger logger) {
@@ -27,7 +27,7 @@ namespace Smylee.PlaylistMonitor.PlaylistCompare {
                  
             // init
             var dateNowString = dateNow.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture);
-            var finalEmail = new GenerateEmail(dateNowString,$"Playlist Monitor Report for {dateNowString}");
+            var finalEmail = new GenerateEmail($"Playlist Monitor Report for {dateNowString}");
             var updateDatabase = new List<Task>();
             var changesFromPrevious = new List<bool>();
             

@@ -1,53 +1,144 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
-using LambdaSharp.Logging;
-using LambdaSharp.Records;
 using Smylee.PlaylistMonitor.Library.Models;
 using Xunit;
 
 namespace Smylee.PlaylistMonitor.PlaylistCompare.Tests {
-    public class PlaylistCompareTests {
-        
-        [Fact]
-        public async Task PlaylistCompareLogicTest() {
-            
-            var email = new GenerateEmail("Playlist monitor report");
-            var deletedList = new List<PlaylistItemsSnippetDb> {
-                new PlaylistItemsSnippetDb {
-                    Title = "foo-playlist3-item5",
-                    Description = "foo-bar-description3"
-                },
-                new PlaylistItemsSnippetDb {
-                    Title = "foo-playlist3-item5",
-                    Description = "foo-bar-description3"
-                },
-                new PlaylistItemsSnippetDb {
-                    Title = "foo-playlist3-item5",
-                    Description = "foo-bar-description3"
-                }
-            };
-            var addedList = new List<PlaylistItemsSnippetDb> {
-                new PlaylistItemsSnippetDb {
-                    Title = "foo-playlist3-item5",
-                    Description = "foo-bar-description3"
-                },
-                new PlaylistItemsSnippetDb {
-                    Title = "foo-playlist3-item5",
-                    Description = "foo-bar-description3"
-                },
-                new PlaylistItemsSnippetDb {
-                    Title = "foo-playlist3-item5",
-                    Description = "foo-bar-description3"
-                }
-            };
-            email.AddCard("Playlist Title", "author", deletedList, addedList);
-            var testing = email.Html;
-            // email.PlaylistReport("dplaylist Title", "playlist author", new List<PlaylistItemsSnippetDb>(), new List<PlaylistItemsSnippetDb>());
 
-            XmlDocument emailTemplate = new XmlDocument();
+    public class ComparisonTest {
+        readonly List<PlaylistItemsSnippetDb> _oldPlaylistItems = new List<PlaylistItemsSnippetDb> {
+            new PlaylistItemsSnippetDb {
+                ChannelId = "channel-id-1",
+                Id = "playlist-id-1"
+            },
+            new PlaylistItemsSnippetDb {
+                ChannelId = "channel-id-2",
+                Id = "playlist-id-1"
+            },
+            new PlaylistItemsSnippetDb {
+                ChannelId = "channel-id-3",
+                Id = "playlist-id-2"
+            }
+        };
+        readonly List<PlaylistItemsSnippetDb> _newPlaylistItems1 = new List<PlaylistItemsSnippetDb> {
+            new PlaylistItemsSnippetDb {
+                ChannelId = "channel-id-3",
+                Id = "playlist-id-2"
+            },
+            new PlaylistItemsSnippetDb {
+                ChannelId = "channel-id-1",
+                Id = "playlist-id-1"
+            },
+            new PlaylistItemsSnippetDb {
+                ChannelId = "channel-id-2",
+                Id = "playlist-id-1"
+            }
+        };
+        readonly List<PlaylistItemsSnippetDb> _newPlaylistItems2 = new List<PlaylistItemsSnippetDb> {
+            new PlaylistItemsSnippetDb {
+                ChannelId = "channel-id-3",
+                Id = "playlist-id-2"
+            },
+            new PlaylistItemsSnippetDb {
+                ChannelId = "channel-id-4",
+                Id = "playlist-id-3"
+            },
+            new PlaylistItemsSnippetDb {
+                ChannelId = "channel-id-5",
+                Id = "playlist-id-3"
+            }
+        };
+
+        [Fact]
+        public async Task IsSameTest() {
+            
+            // Arrange
+            // Act
+            var comparisonResult1 = _oldPlaylistItems.IsSame(_newPlaylistItems1);
+            var comparisonResult2 = _oldPlaylistItems.IsSame(_newPlaylistItems2);
+            
+            // Assert
+            Assert.True(comparisonResult1);
+            Assert.False(comparisonResult2);
+            
+        }
+
+        [Fact]
+        public async Task AddItemsTest() {
+            
+            // Arrange
+            // Act
+            var comparisonResult1 = Comparison.AddedItems(_oldPlaylistItems, _newPlaylistItems1);
+            var comparisonResult2 = Comparison.AddedItems(null, _newPlaylistItems2);
+            var comparisonResult3 = Comparison.AddedItems(_oldPlaylistItems, _newPlaylistItems2);
+
+            // Assert
+            Assert.Empty(comparisonResult1);
+            Assert.Empty(comparisonResult2);
+            Assert.True(comparisonResult3.Exists(x => x.ChannelId == "channel-id-4"));
+            Assert.True(comparisonResult3.Exists(x => x.ChannelId == "channel-id-5"));
+            Assert.True(comparisonResult3.Exists(x => x.Id == "playlist-id-3"));
+            
+        }
+
+        [Fact]
+        public async Task DeletedItemsTest() {
+
+            // Arrange
+            // Act
+            var comparisonResult1 = Comparison.DeletedItems(_oldPlaylistItems, _newPlaylistItems1);
+            var comparisonResult2 = Comparison.DeletedItems(null, _newPlaylistItems1);
+            var comparisonResult3 = Comparison.DeletedItems(_oldPlaylistItems, _newPlaylistItems2);
+
+            // Assert
+            Assert.Empty(comparisonResult1);
+            Assert.Empty(comparisonResult2);
+            Assert.True(comparisonResult3.Exists(x => x.ChannelId == "channel-id-1"));
+            Assert.True(comparisonResult3.Exists(x => x.ChannelId == "channel-id-2"));
+            Assert.True(comparisonResult3.Exists(x => x.Id == "playlist-id-1"));
+        }
+
+        // [Fact]
+        // public async Task PlaylistCompareLogicTest() {
+        //     
+        //     var email = new GenerateEmail(DateTime.Now.Date.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture), "Playlist monitor report");
+        //     var deletedList = new List<PlaylistItemsSnippetDb> {
+        //         new PlaylistItemsSnippetDb {
+        //             Title = "foo-playlist3-item5",
+        //             Description = "foo-bar-description3"
+        //         },
+        //         new PlaylistItemsSnippetDb {
+        //             Title = "foo-playlist3-item5",
+        //             Description = "foo-bar-description3"
+        //         },
+        //         new PlaylistItemsSnippetDb {
+        //             Title = "foo-playlist3-item5",
+        //             Description = "foo-bar-description3"
+        //         }
+        //     };
+        //     var addedList = new List<PlaylistItemsSnippetDb> {
+        //         new PlaylistItemsSnippetDb {
+        //             Title = "foo-playlist3-item5",
+        //             Description = "foo-bar-description3"
+        //         },
+        //         new PlaylistItemsSnippetDb {
+        //             Title = "foo-playlist3-item5",
+        //             Description = "foo-bar-description3"
+        //         },
+        //         new PlaylistItemsSnippetDb {
+        //             Title = "foo-playlist3-item5",
+        //             Description = "foo-bar-description3"
+        //         }
+        //     };
+        //     email.AddCard("Playlist Title", "author", deletedList, addedList);
+        //     var testing = email.Html;
+        //     // email.PlaylistReport("dplaylist Title", "playlist author", new List<PlaylistItemsSnippetDb>(), new List<PlaylistItemsSnippetDb>());
+        //
+        //     XmlDocument emailTemplate = new XmlDocument();
             // emailTemplate.Load("emailTemplate.html");
             // emailTemplate.DocumentElement.SelectSingleNode("//div[@class=\"container\"]/h1").InnerText = "Report Title";
             //
@@ -82,7 +173,7 @@ namespace Smylee.PlaylistMonitor.PlaylistCompare.Tests {
 
 
 
-        }
+        // }
         // [Fact]
         // public async Task LogicFunctionalTest() {
         //     var config = new LambdaConfig(new LambdaDictionarySource(new List<KeyValuePair<string, string>> {

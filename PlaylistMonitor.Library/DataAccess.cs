@@ -11,13 +11,16 @@ using Smylee.PlaylistMonitor.Library.Models;
 namespace Smylee.PlaylistMonitor.Library {
 
     public class DataAccess {
+        
+        // --- Fields ---
         private readonly IDependencyProvider _provider;
 
+        // --- Constructor ---
         public DataAccess(IDependencyProvider provider) {
             _provider = provider;
         }
-        
 
+        // --- Methods ---
 #region ChannelSnippet
 
         public async Task<ChannelSnippetDb> GetChannelDataAsync(string channelId, string playlistTitle) {
@@ -64,9 +67,16 @@ namespace Smylee.PlaylistMonitor.Library {
                 playlists.AddRange(response.Items);
                 nextPageToken = response.NextPageToken;
             } while (nextPageToken != null);
-            var playlist = playlists.First(x => x.Snippet.Title == playlistTitle).ToPlaylistSnippetDb();
-            await _provider.DynamoDbUpdateCachePlaylistAsync(channelId, playlist);
-            return playlist;
+            if (playlists.Count > 0) {
+                var playlist = playlists.FirstOrDefault(x => x.Snippet.Title == playlistTitle);
+                if (playlist == null) {
+                    return null;
+                }
+                var playlistSnippetDb = playlist.ToPlaylistSnippetDb();
+                await _provider.DynamoDbUpdateCachePlaylistAsync(channelId, playlistSnippetDb);
+                return playlistSnippetDb;
+            }
+            return null;
         }
 
 #endregion

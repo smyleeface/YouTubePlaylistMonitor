@@ -19,30 +19,18 @@ namespace Smylee.PlaylistMonitor.PlaylistCompare {
             return true;
         }
 
-        public static List<PlaylistItemsSnippetDb> ComparePlaylistsForDelete(List<PlaylistItemsSnippetDb> existingPlaylistList, List<PlaylistItemsSnippetDb> currentPlaylistItems) {
-        
-            // find all items that are in the existing list that are not in the current (deleted items)
-            var currentItemIds = currentPlaylistItems.Select(x => x.Id).ToList();
-            return existingPlaylistList.Where(item => !currentItemIds.Contains(item.Id)).ToList();
-        }
-
         public static List<PlaylistItemsSnippetDb> DeletedItems(List<PlaylistItemsSnippetDb> cachedPlaylistItems, List<PlaylistItemsSnippetDb> currentPlaylistItems) {
             if (cachedPlaylistItems == null) return new List<PlaylistItemsSnippetDb>();
-            var items = ComparePlaylistsForDelete(cachedPlaylistItems, currentPlaylistItems);
+            var currentItemIds = currentPlaylistItems.Select(x => x.Id).ToList();
+            var items = cachedPlaylistItems.Where(item => !currentItemIds.Contains(item.Id)).ToList();
             Console.WriteLine("deletedItems " + JsonConvert.SerializeObject(items));
             return items;
-        }
-        
-        public static List<PlaylistItemsSnippetDb> ComparePlaylistsForAdd(List<PlaylistItemsSnippetDb> existingPlaylistList, List<PlaylistItemsSnippetDb> currentPlaylistItemList) {
-
-            // find all items that are in the current list that are not in the existing (added items)
-            var existingItemIds = existingPlaylistList.Select(x => x.Id).ToList();
-            return currentPlaylistItemList.Where(item => !existingItemIds.Contains(item.Id)).ToList();
         }
 
         public static List<PlaylistItemsSnippetDb> AddedItems(List<PlaylistItemsSnippetDb> existingPlaylistList, List<PlaylistItemsSnippetDb> currentPlaylistItemList) {
             if (existingPlaylistList == null) return new List<PlaylistItemsSnippetDb>();
-            var items = ComparePlaylistsForAdd(existingPlaylistList, currentPlaylistItemList);
+            var existingItemIds = existingPlaylistList.Select(x => x.Id).ToList();
+            var items  = currentPlaylistItemList.Where(item => !existingItemIds.Contains(item.Id)).ToList();
             Console.WriteLine("addedItems " + JsonConvert.SerializeObject(items));
             return items;
         }

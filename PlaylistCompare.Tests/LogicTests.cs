@@ -3,100 +3,151 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
 using System.Xml;
+using Amazon.DynamoDBv2.Model;
+using Amazon.Lambda.SNSEvents;
+using Google.Apis.YouTube.v3.Data;
+using LambdaSharp;
+using LambdaSharp.ConfigSource;
 using LambdaSharp.Logging;
 using LambdaSharp.Records;
+using Moq;
+using Smylee.PlaylistMonitor.Library;
 using Smylee.PlaylistMonitor.Library.Models;
 using Xunit;
 
 namespace Smylee.PlaylistMonitor.PlaylistCompare.Tests {
-    public class PlaylistCompareTests {
+
+    public class LogicTests {
         
-        [Fact]
-        public async Task PlaylistCompareLogicTest() {
-            
-            var email = new GenerateEmail("Playlist monitor report");
-            var deletedList = new List<PlaylistItemsSnippetDb> {
-                new PlaylistItemsSnippetDb {
-                    Title = "foo-playlist3-item5",
-                    Description = "foo-bar-description3"
-                },
-                new PlaylistItemsSnippetDb {
-                    Title = "foo-playlist3-item5",
-                    Description = "foo-bar-description3"
-                },
-                new PlaylistItemsSnippetDb {
-                    Title = "foo-playlist3-item5",
-                    Description = "foo-bar-description3"
-                }
-            };
-            var addedList = new List<PlaylistItemsSnippetDb> {
-                new PlaylistItemsSnippetDb {
-                    Title = "foo-playlist3-item5",
-                    Description = "foo-bar-description3"
-                },
-                new PlaylistItemsSnippetDb {
-                    Title = "foo-playlist3-item5",
-                    Description = "foo-bar-description3"
-                },
-                new PlaylistItemsSnippetDb {
-                    Title = "foo-playlist3-item5",
-                    Description = "foo-bar-description3"
-                }
-            };
-            email.AddCard("Playlist Title", "author", deletedList, addedList);
-            var testing = email.Html;
-            // email.PlaylistReport("dplaylist Title", "playlist author", new List<PlaylistItemsSnippetDb>(), new List<PlaylistItemsSnippetDb>());
-
-            XmlDocument emailTemplate = new XmlDocument();
-            // emailTemplate.Load("emailTemplate.html");
-            // emailTemplate.DocumentElement.SelectSingleNode("//div[@class=\"container\"]/h1").InnerText = "Report Title";
-            //
-            // var emailBody = emailTemplate.DocumentElement.SelectSingleNode("//div[@class=\"container\"]/div[@class=\"row\"]/div[@class=\"col\"]/div[@class=\"card text-left\"]");
-            // var cardHeader = emailBody.SelectSingleNode("//div[@class=\"card-header\"]");
-            // cardHeader.SelectSingleNode("//h2").InnerText = "Playlist Name";
-            // cardHeader.SelectSingleNode("//h6[@class=\"card-subtitle mb-2 text-muted\"]").InnerText = "by Author Name";
-            //
-            // var cardBody = emailBody.SelectSingleNode("//div[@class=\"card-body\"]/div[@class=\"card-text\"]/div[@class=\"playlist-changes\"]");
-            // cardBody.InnerText = "ul/li list";
-
-            //emailTemplate.DocumentElement.InnerXml
-
-            //var playlistHeader = new XmlDocument();
-            // var playlistHeaderRoot = playlistHeader.DocumentElement;
-            //
-            // elem.InnerText="19.95";
-            // playlistHeader.DocumentElement.InsertAfter(elem, playlistHeaderRoot.FirstChild);
-            //var playlistHeader = "";
-
-
-
-
-
-            //XmlNode root = emailTemplate.DocumentElement;
-            // root.ChildNodes[2].ChildNodes[0].InnerText = "foobar";
-            // var emailContent = root.InnerXml;
-            //
-            // var cardHeader = doc.CreateElement("div");
-            //cardHeader.Attributes("class", "card-header");
-            //<div class=\"card-header\"><h2>{playlistTitle}</h2><h6 class=\"card-subtitle mb-2 text-muted\">by {playlistAuthor}</h6></div>";
-
-
-
+        [Fact(Skip="Functional test with cloud credentials.")]
+        public async Task LogicFunctionalTest() {
+            var config = new LambdaConfig(new LambdaDictionarySource(new List<KeyValuePair<string, string>> {
+                new KeyValuePair<string, string>("/CachePlaylists", "arn:aws:dynamodb:us-east-1:892750500233:table/Sandbox-Smylee-PlaylistMonitor-CachePlaylists-EZQ47Q5W0F7U"),
+                new KeyValuePair<string, string>("/CacheVideos", "arn:aws:dynamodb:us-east-1:892750500233:table/Sandbox-Smylee-PlaylistMonitor-CacheVideos-1S8TRT4N4GXNY"),
+                new KeyValuePair<string, string>("/UserSubscriptions", "arn:aws:dynamodb:us-east-1:892750500233:table/Sandbox-Smylee-PlaylistMonitor-UserSubscriptions-1IZ8B6HR1NHF9"),
+                new KeyValuePair<string, string>("/FromEmail", "patty.ramert@gmail.com"),
+                new KeyValuePair<string, string>("/YouTubeApiKey", "REDACTED")
+            }));
+            var snsEvent = new SNSEvent {Records = new List<SNSEvent.SNSRecord> {new SNSEvent.SNSRecord {Sns = new SNSEvent.SNSMessage {Message = "{\"Key\": \"patty.ramert@gmail.com\",\"Value\": [{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"electro 2016\",\"finalEmail\": null,\"timestamp\": null},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"Vocal HTC\",\"finalEmail\": null,\"timestamp\": null},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"Fyre!\",\"finalEmail\": null,\"timestamp\": null},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"Trance/House\",\"finalEmail\": null,\"timestamp\": null},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"Comedy\",\"finalEmail\": null,\"timestamp\": null},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"amazing\",\"finalEmail\": null,\"timestamp\": null},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"music\",\"finalEmail\": null,\"timestamp\": null}]}",}}}};
+            var function = new Function();
+            await function.InitializeAsync(config);
+            await function.ProcessMessageAsync(snsEvent);
         }
-        // [Fact]
-        // public async Task LogicFunctionalTest() {
-        //     var config = new LambdaConfig(new LambdaDictionarySource(new List<KeyValuePair<string, string>> {
-        //         new KeyValuePair<string, string>("/CachePlaylists", "arn:aws:dynamodb:us-east-1:892750500233:table/Sandbox-Smylee-PlaylistMonitor-CachePlaylists-EZQ47Q5W0F7U"),
-        //         new KeyValuePair<string, string>("/CacheVideos", "arn:aws:dynamodb:us-east-1:892750500233:table/Sandbox-Smylee-PlaylistMonitor-CacheVideos-1S8TRT4N4GXNY"),
-        //         new KeyValuePair<string, string>("/UserSubscriptions", "arn:aws:dynamodb:us-east-1:892750500233:table/Sandbox-Smylee-PlaylistMonitor-UserSubscriptions-1IZ8B6HR1NHF9"),
-        //         new KeyValuePair<string, string>("/FromEmail", "patty.ramert@gmail.com"),
-        //         new KeyValuePair<string, string>("/YouTubeApiKey", "REDACTED")
-        //     }));
-        //     var snsEvent = new SNSEvent {Records = new List<SNSEvent.SNSRecord> {new SNSEvent.SNSRecord {Sns = new SNSEvent.SNSMessage {Message = "{\"Key\": \"patty.ramert@gmail.com\",\"Value\": [{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"electro 2016\",\"finalEmail\": null,\"timestamp\": null},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"Vocal HTC\",\"finalEmail\": null,\"timestamp\": null},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"Fyre!\",\"finalEmail\": null,\"timestamp\": null},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"Trance/House\",\"finalEmail\": null,\"timestamp\": null},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"Comedy\",\"finalEmail\": null,\"timestamp\": null},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"amazing\",\"finalEmail\": null,\"timestamp\": null},{\"channelId\": \"UCDFjGPe4Yu6sVL_KmrcDtpg\",\"playlistName\": \"music\",\"finalEmail\": null,\"timestamp\": null}]}",}}}};
-        //     var function = new Function();
-        //     await function.InitializeAsync(config);
-        //     await function.ProcessMessageAsync(snsEvent);
-        // }
+
+        [Fact]
+        public async Task LogicTest() {
+            
+            // Arrange
+            var playlistMonitorSubscription = new PlaylistMonitorSubscription {
+                PlaylistName = "foo-playlist",
+                ChannelId = "foo-username"
+            };
+            var playlistMonitorSubscription2 = new PlaylistMonitorSubscription {
+                PlaylistName = "foo-playlist2",
+                ChannelId = "foo-username2"
+            };
+            var emailSub1 = new List<PlaylistMonitorSubscription> {
+                playlistMonitorSubscription,
+                playlistMonitorSubscription2
+            };
+            var dateNow = new DateTime(2020, 1, 4);
+            var provider = new Mock<IDependencyProvider>(MockBehavior.Strict);
+            var getItemResponse = new GetItemResponse {
+                Item = new Dictionary<string, AttributeValue> {
+                    { "channelId", new AttributeValue { S = "Channel Id" } },
+                    { "playlistTitle", new AttributeValue { S = "foo-playlist" } }
+                } 
+            };
+
+            provider.Setup(x => x.DynamoDbGetCacheChannelAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(new GetItemResponse()));
+            provider.Setup(x => x.YouTubeApiChannelSnippetAsync(It.IsAny<string>())).Returns(Task.FromResult(new ChannelSnippet {
+                Title = "channel title",
+            }));
+            provider.Setup(x => x.DynamoDbPutCacheChannelAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<ChannelSnippet>())).Returns(Task.CompletedTask);
+
+            provider.Setup(x => x.DynamoDbGetCachePlaylistsAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(new GetItemResponse()));
+            provider.Setup(x => x.YouTubeApiPlaylistsAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(new PlaylistListResponse {
+                Items = new List<Playlist> {
+                    new Playlist {
+                        Id = "playlist id",
+                        Snippet = new PlaylistSnippet {
+                            Title = "foo-playlist"
+                        }
+                    }
+                }
+            }));
+            provider.Setup(x => x.DynamoDbUpdateCachePlaylistAsync(It.IsAny<string>(), It.IsAny<PlaylistSnippetDb>())).Returns(Task.CompletedTask);
+
+            provider.Setup(x => x.DynamoDbGetCachePlaylistsItemsAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(new GetItemResponse()));
+            provider.Setup(x => x.YouTubeApiPlaylistItemsAsync(It.IsAny<string>(), null)).Returns(Task.FromResult(new PlaylistItemListResponse {
+                Items = new List<PlaylistItem> {
+                    new PlaylistItem {
+                        Id = "playlist id",
+                        Snippet = new PlaylistItemSnippet {
+                            Title = "foo-playlist",
+                            ResourceId = new ResourceId {
+                                VideoId = "foo-video-id"
+                            }
+                        }
+                    }
+                }
+            }));
+
+            provider.Setup(x => x.DynamoDbGetCacheVideoDataAsync(It.IsAny<List<string>>())).Returns(Task.FromResult(new List<BatchGetItemResponse>()));
+            provider.Setup(x => x.YouTubeApiVideosAsync(It.IsAny<string>())).Returns(Task.FromResult(new VideoListResponse {
+                Items = new List<Video> {
+                    new Video {
+                        Id = "foo-video-id",
+                        Snippet = new VideoSnippet {
+                            Title = "video title",
+                            ChannelId = "video channel id",
+                            ChannelTitle = "channel title"
+                        }
+                    }
+                }
+            }));
+            provider.Setup(x => x.DynamoDbUpdateCacheVideoDataAsync(It.IsAny<List<WriteRequest>>())).Returns(Task.CompletedTask);
+            // provider.Setup(x => x.DynamoDbPutCacheChannelAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<ChannelSnippet>())).Returns(Task.CompletedTask);
+            
+            
+//             YouTubeApiPlaylistsAsync("foo-username", null)
+//             provider.Setup(x => x.DynamoDbGetCacheChannelAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(getItemResponse));
+//             //.DynamoDbGetCacheChannelAsync("foo-username", "foo-playlist")
+//             var channelSnippet = new ChannelSnippet {
+//                 Title = "Channel Title",
+//                 Description = "Description",
+//                 Thumbnails = new ThumbnailDetails {
+//                     High = new Thumbnail {
+//                         Width = 10,
+//                         Height = 10,
+//                         Url = "http://example.com"
+//                     }
+//                 }
+//             };
+//             provider.Setup(x => x.YouTubeApiChannelSnippetAsync(It.IsAny<string>())).Returns(Task.FromResult(channelSnippet));
+//             //.YouTubeApiChannelSnippetAsync("foo-username") 
+//             provider.Setup(x => x.DynamoDbPutCacheChannelAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<ChannelSnippet>())).Returns(Task.CompletedTask);
+//             //.DynamoDbPutCacheChannelAsync("foo-username", "foo-playlist", ChannelSnippet)
+//             var getPlaylistResponse = new GetItemResponse {
+//                 Item = new Dictionary<string, AttributeValue> {
+//                     { "channelId", new AttributeValue { S = "Channel Id" } },
+//                     { "playlistTitle", new AttributeValue { S = "foo-playlist" } }
+//                 } 
+//             };
+//             
+// //TODO continue mocking the return calls
+//             provider.Setup(x => x.DynamoDbGetCachePlaylistsAsync(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(getPlaylistResponse));
+//             //.DynamoDbGetCachePlaylistsAsync("foo-username", "foo-playlist")
+            var dataAccess = new DataAccess(provider.Object);
+            
+            
+            var logic = new Logic("foo-bar-from@gmail.com", dataAccess, new Logger());
+            
+            // Act
+            await logic.Run(dateNow, "foo-bar@email.com", emailSub1);
+            
+            // Assert
+        }
         // var provider = new Mock<IDependencyProvider>(MockBehavior.Strict);
             //     provider.SetupSequence(x => x.YouTubeApiChannelSnippetAsync(It.Is<string>(y => y.StartsWith("foo-username"))))
             //         .Returns(Task.FromResult(youtubeChannelListResponse1))
