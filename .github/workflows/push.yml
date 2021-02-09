@@ -1,18 +1,50 @@
-name: Run Tests
+name: Push Workflow
 
 on: push
 
 jobs:
-  build:
-
+  hello_world_job:
     runs-on: ubuntu-latest
-
+    name: A job to say hello
     steps:
-      - uses: actions/checkout@v2
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Hello world action step
+        id: hello
+#        uses: ./.github/actions/sample-action
+        image: ghcr.io/smyleeface/sampleimage:latest
+        credentials:
+          username: smyleeface
+          password: ${{ secrets.CONTIANER_READONLY }}
         with:
-          dotnet-version: 2.2.300
-      - name: Run Tests
-        working-directory: ${{ github.workspace }}
-        run: dotnet test
+          who-to-greet: 'Patty'
+      # Use the output from the `hello` step
+      - name: Get the output time
+        run: echo "The time was ${{ steps.hello.outputs.time }}"
+
+
+#name: Push Workflow
+#
+#on: push
+#
+#jobs:
+#  tests:
+#
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - uses: actions/checkout@v2
+#      - name: Setup .NET Core
+#        uses: actions/setup-dotnet@v1
+#        with:
+#          dotnet-version: 3.1.201
+#      - name: Run Tests
+#        working-directory: ${{ github.workspace }}
+#        env:
+#          TOKEN_FOR_GITHUB: ${{ secrets.GITHUB_TOKEN }}
+#        run: |
+#          set +e
+#          dotnet test
+#          export API_PATH="https://api.github.com/repos/${GITHUB_REPOSITORY}/statuses/${GITHUB_SHA}"
+#          curl -X POST ${API_PATH} -H "Authorization: Token ${TOKEN_FOR_GITHUB}" -d "{\"state\": \"success\",\"description\": \"Tests passed!\",\"context\": \"push-workflow/github\"}"
+#

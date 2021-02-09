@@ -2,20 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
-using LambdaSharp.Logger;
-using Smylee.YouTube.PlaylistMonitor.Library;
-using Smylee.YouTube.PlaylistMonitor.Library.Models;
+using LambdaSharp.Logging;
+using Smylee.PlaylistMonitor.Library;
+using Smylee.PlaylistMonitor.Library.Models;
 
-namespace Smylee.YouTube.PlaylistCompare {
+namespace Smylee.PlaylistMonitor.PlaylistCompare {
 
     public class Logic {
 
-        private readonly ILambdaLogLevelLogger _logger;
+        private readonly ILambdaSharpLogger _logger;
         private readonly DataAccess _dataAccess;
-        private string _fromEmail;
+        private readonly string _fromEmail;
 
         //--- Methods ---
-        public Logic(string fromEmail, DataAccess dataAccess, ILambdaLogLevelLogger logger) {
+        public Logic(string fromEmail, DataAccess dataAccess, ILambdaSharpLogger logger) {
             _dataAccess = dataAccess;
             _logger = logger;
             _fromEmail = fromEmail;
@@ -27,8 +27,9 @@ namespace Smylee.YouTube.PlaylistCompare {
                  
             // init
             var dateNowString = dateNow.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture);
-            var finalEmail = $"<h1>Playlist Monitor Report for {dateNowString}</h1><br /><br />";
+            var finalEmail = new GenerateEmail($"Playlist Monitor Report for {dateNowString}");
             var updateDatabase = new List<Task>();
+            var changesFromPrevious = new List<bool>();
             
             // check each playlist
             // requestedPlaylists.ForEach(async playlist => {
@@ -54,23 +55,37 @@ namespace Smylee.YouTube.PlaylistCompare {
                 // get existing data from youtube
                 var currentPlaylistItems = await _dataAccess.GetRecentPlaylistItemDataAsync(playlistData.Id);
                 
+                // filter the lists
+                var deletedItems = Comparison.DeletedItems(oldPlaylistItems, currentPlaylistItems);
+                var addedItems = Comparison.AddedItems(oldPlaylistItems, currentPlaylistItems); 
+                
                 // generate the comparison report
-                finalEmail += $"<h2>{playlistTitle} playlist by {channelSnippet.Title}</h2><br /><br />" + 
-                              Comparison.Report(playlistTitle, oldPlaylistItems, currentPlaylistItems);
+                finalEmail.AddCard(playlistTitle, channelSnippet.Title, deletedItems, addedItems);
 
+                // if there were any changes, or this is the first run, an email should be sent
+                changesFromPrevious.Add(oldPlaylistItems == null || !oldPlaylistItems.IsSame(currentPlaylistItems));
+                
                 // log data for database entry later
                 // TODO: turn this into batch write requests
                 updateDatabase.Add(_dataAccess.UpdatePlaylistItemDataFromCacheAsync(channelId, playlistTitle, currentPlaylistItems));
             }
             
             // update database
+            _logger.Log(LambdaLogLevel.INFO, null, "updating database");
             Task.WaitAll(updateDatabase.ToArray());
+
+            if (changesFromPrevious.Contains(true)) {
+                
+                // send email
+                _logger.Log(LambdaLogLevel.INFO, null, "sending email");
+                await _dataAccess.SendEmailAsync(_fromEmail, requestEmail, $"YouTube Playlist report for {dateNowString}", finalEmail.Html);
+                
+                // update subscription with last email sent content
+                _logger.Log(LambdaLogLevel.INFO, null, "saving email content");
+                await _dataAccess.UpdateSubscriptionCacheAsync(requestEmail, finalEmail.Html);
+            }
             
-            // send email
-            await _dataAccess.SendEmailAsync(_fromEmail, requestEmail, $"YouTube Playlist report for {dateNowString}", finalEmail);
-            
-            // update subscription with last email sent content
-            await _dataAccess.UpdateSubscriptionCacheAsync(requestEmail, finalEmail);
+            _logger.Log(LambdaLogLevel.INFO, null, "complete");
         }
     }
 }

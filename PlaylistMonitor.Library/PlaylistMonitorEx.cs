@@ -2,41 +2,56 @@ using System.Collections.Generic;
 using System.Linq;
 using Amazon.DynamoDBv2.Model;
 using Google.Apis.YouTube.v3.Data;
-using Smylee.YouTube.PlaylistMonitor.Library.Models;
+using Smylee.PlaylistMonitor.Library.Models;
 
-namespace Smylee.YouTube.PlaylistMonitor.Library {
+namespace Smylee.PlaylistMonitor.Library {
 
     public static class PlaylistMonitorEx {
         public static ChannelSnippetDb ToChannelSnippetDb(this ChannelSnippet channelSnippet) {
-            return new ChannelSnippetDb {
-                Description = channelSnippet.Description,
-                Title = channelSnippet.Title,
-                Thumbnail = channelSnippet.Thumbnails.High.Url,
-                ThumbnailWidth = channelSnippet.Thumbnails.High.Width,
-                ThumbnailHeight = channelSnippet.Thumbnails.High.Height
+            var channelSnippetDb = new ChannelSnippetDb {
+                Title = channelSnippet.Title
             };
+            if (!string.IsNullOrEmpty(channelSnippet.Description)) {
+                channelSnippetDb.Description = channelSnippet.Description;
+            }
+            if (channelSnippet.Thumbnails != null) {
+                channelSnippetDb.Thumbnail = channelSnippet.Thumbnails.High.Url;
+                channelSnippetDb.ThumbnailWidth = channelSnippet.Thumbnails.High.Width;
+                channelSnippetDb.ThumbnailHeight = channelSnippet.Thumbnails.High.Height;
+            }
+            return channelSnippetDb;
         }
         
         public static PlaylistSnippetDb ToPlaylistSnippetDb(this Playlist playlistItem) {
-            return new PlaylistSnippetDb {
+            var playlistSnippetDb = new PlaylistSnippetDb {
                 Id = playlistItem.Id,
-                Description = playlistItem.Snippet.Description,
-                Title = playlistItem.Snippet.Title,
-                Thumbnail = playlistItem.Snippet.Thumbnails.High.Url,
-                ThumbnailWidth = playlistItem.Snippet.Thumbnails.High.Width,
-                ThumbnailHeight = playlistItem.Snippet.Thumbnails.High.Height
+                Title = playlistItem.Snippet.Title
             };
+            if (!string.IsNullOrEmpty(playlistItem.Snippet.Description)) {
+                playlistSnippetDb.Description = playlistItem.Snippet.Description;
+            }
+            if (playlistItem.Snippet.Thumbnails != null) {
+                playlistSnippetDb.Thumbnail = playlistItem.Snippet.Thumbnails.High.Url;
+                playlistSnippetDb.ThumbnailWidth = playlistItem.Snippet.Thumbnails.High.Width;
+                playlistSnippetDb.ThumbnailHeight = playlistItem.Snippet.Thumbnails.High.Height;
+            }
+            return playlistSnippetDb;
         }
         
         public static PlaylistItemsSnippetDb ToPlaylistItemsSnippetDb(this PlaylistItem playlistItem) {
-            return new PlaylistItemsSnippetDb {
+            var playlistItemsSnippetDb =  new PlaylistItemsSnippetDb {
                 Id = playlistItem.Snippet.ResourceId.VideoId,
-                Description = playlistItem.Snippet.Description,
-                Title = playlistItem.Snippet.Title,
-                Thumbnail = playlistItem.Snippet.Thumbnails.High.Url,
-                ThumbnailWidth = playlistItem.Snippet.Thumbnails.High.Width,
-                ThumbnailHeight = playlistItem.Snippet.Thumbnails.High.Height
+                Title = playlistItem.Snippet.Title
             };
+            if (!string.IsNullOrEmpty(playlistItem.Snippet.Description)) {
+                playlistItemsSnippetDb.Description = playlistItem.Snippet.Description;
+            }
+            if (playlistItem.Snippet.Thumbnails != null) {
+                playlistItemsSnippetDb.Thumbnail = playlistItem.Snippet.Thumbnails.High.Url;
+                playlistItemsSnippetDb.ThumbnailWidth = playlistItem.Snippet.Thumbnails.High.Width;
+                playlistItemsSnippetDb.ThumbnailHeight = playlistItem.Snippet.Thumbnails.High.Height;
+            }
+            return playlistItemsSnippetDb;
         }
         
         public static VideoSnippetDb ToVideoSnippetDb(this Video video) {

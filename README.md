@@ -32,3 +32,4 @@ lash deploy --tier tiername --profile profilename
 - exponental backoff of youtube api request -- check for error code
 - step functions for long running playlists?
 - with caching, maybe do a fanout?
+- first run give summary of cached videos

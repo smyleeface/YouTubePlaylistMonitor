@@ -3,21 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
-using Amazon.Lambda.Core;
 using Amazon.Lambda.SNSEvents;
 using Amazon.SimpleEmailV2;
 using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
 using LambdaSharp;
 using Newtonsoft.Json;
-using Smylee.YouTube.PlaylistMonitor.Library;
-using Smylee.YouTube.PlaylistMonitor.Library.Models;
-using DependencyProvider = Smylee.YouTube.PlaylistMonitor.Library.DependencyProvider;
+using Smylee.PlaylistMonitor.Library;
+using Smylee.PlaylistMonitor.Library.Models;
+using DependencyProvider = Smylee.PlaylistMonitor.Library.DependencyProvider;
 
-// Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
-[assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.Json.JsonSerializer))]
-
-namespace Smylee.YouTube.PlaylistCompare {
+namespace Smylee.PlaylistMonitor.PlaylistCompare {
 
     // public class Function : ALambdaTopicFunction<Dictionary<string, List<PlaylistMonitorSubscription>>> {
     public class Function : ALambdaFunction<SNSEvent, string> {

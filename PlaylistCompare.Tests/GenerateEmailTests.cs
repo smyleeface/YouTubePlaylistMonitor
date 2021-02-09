@@ -1,25 +1,139 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
-using Amazon.DynamoDBv2;
-using Amazon.DynamoDBv2.Model;
-using Amazon.Lambda.SNSEvents;
-using Google.Apis.YouTube.v3.Data;
-using LambdaSharp;
-using LambdaSharp.ConfigSource;
-using LambdaSharp.Logger;
-using Moq;
-using Smylee.PlaylistMonitor.PlaylistMonitor;
+using System.Xml;
+using LambdaSharp.Logging;
+using LambdaSharp.Records;
+using Smylee.PlaylistMonitor.Library.Models;
 using Xunit;
 
-namespace Smylee.YouTube.PlaylistCompare.PlaylistCompareTests {
+namespace Smylee.PlaylistMonitor.PlaylistCompare.Tests {
 
-    public class Logger : ILambdaLogLevelLogger {
-        public void Log(LambdaLogLevel level, Exception exception, string format, params object[] arguments) {}
-    }
+    public class GenerateEmailTests {
 
-    public class Tests {
+        [Fact]
+        public async Task HtmlTest() {
+            var emailSubject = "Playlist monitor report";
+            var generateEmail = new GenerateEmail(emailSubject);
+            Assert.Contains(emailSubject, generateEmail.Html);
+        }
 
+        [Fact]
+        public async Task AddCardTest() {
+            var deletedList = new List<PlaylistItemsSnippetDb> {
+                new PlaylistItemsSnippetDb {
+                    Title = "deleted item 1",
+                    Description = "deleted item description 1"
+                },
+                new PlaylistItemsSnippetDb {
+                    Title = "deleted item 2",
+                    Description = "deleted item description 2"
+                },
+                new PlaylistItemsSnippetDb {
+                    Title = "deleted item 3",
+                    Description = "deleted item description 3"
+                }
+            };
+            var addedList = new List<PlaylistItemsSnippetDb> {
+                new PlaylistItemsSnippetDb {
+                    Title = "added item 1",
+                    Description = "added item description 1"
+                },
+                new PlaylistItemsSnippetDb {
+                    Title = "added item 2",
+                    Description = "added item description 2"
+                },
+                new PlaylistItemsSnippetDb {
+                    Title = "added item 3",
+                    Description = "added item description 3"
+                }
+            };
+            var playlistTitle = "playlist title";
+            var playlistAuthor = "playlist author";
+            var generateEmail = new GenerateEmail("foo-bar");
+            generateEmail.AddCard(playlistTitle, playlistAuthor, deletedList, addedList);
+            Assert.Contains(playlistTitle, generateEmail.Html);
+            Assert.Contains(playlistAuthor, generateEmail.Html);
+            Assert.Contains(addedList.First().Title, generateEmail.Html);
+            Assert.Contains(deletedList.First().Title, generateEmail.Html);
+        }
+
+        // [Fact]
+        // public async Task PlaylistCompareLogicTest() {
+        //     
+        //     var dateNow = new DateTime(2020, 1, 4, 6, 4,30).Date.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture);
+        //     var emailSubject = "Playlist monitor report";
+        //     var generateEmail = new GenerateEmail(dateNow, emailSubject);
+        //     var deletedList = new List<PlaylistItemsSnippetDb> {
+        //         new PlaylistItemsSnippetDb {
+        //             Title = "deleted item 1",
+        //             Description = "deleted item description 1"
+        //         },
+        //         new PlaylistItemsSnippetDb {
+        //             Title = "deleted item 2",
+        //             Description = "deleted item description 2"
+        //         },
+        //         new PlaylistItemsSnippetDb {
+        //             Title = "deleted item 3",
+        //             Description = "deleted item description 3"
+        //         }
+        //     };
+        //     var addedList = new List<PlaylistItemsSnippetDb> {
+        //         new PlaylistItemsSnippetDb {
+        //             Title = "added item 1",
+        //             Description = "added item description 1"
+        //         },
+        //         new PlaylistItemsSnippetDb {
+        //             Title = "added item 2",
+        //             Description = "added item description 2"
+        //         },
+        //         new PlaylistItemsSnippetDb {
+        //             Title = "added item 3",
+        //             Description = "added item\ndescription 3"
+        //         }
+        //     };
+        //     generateEmail.AddCard("Playlist Title", "author name", deletedList, addedList);
+        //     var htmlEmail = generateEmail.Html;
+        //     // email.PlaylistReport("dplaylist Title", "playlist author", new List<PlaylistItemsSnippetDb>(), new List<PlaylistItemsSnippetDb>());
+        //
+        //     XmlDocument emailTemplate = new XmlDocument();
+            // emailTemplate.Load("emailTemplate.html");
+            // emailTemplate.DocumentElement.SelectSingleNode("//div[@class=\"container\"]/h1").InnerText = "Report Title";
+            //
+            // var emailBody = emailTemplate.DocumentElement.SelectSingleNode("//div[@class=\"container\"]/div[@class=\"row\"]/div[@class=\"col\"]/div[@class=\"card text-left\"]");
+            // var cardHeader = emailBody.SelectSingleNode("//div[@class=\"card-header\"]");
+            // cardHeader.SelectSingleNode("//h2").InnerText = "Playlist Name";
+            // cardHeader.SelectSingleNode("//h6[@class=\"card-subtitle mb-2 text-muted\"]").InnerText = "by Author Name";
+            //
+            // var cardBody = emailBody.SelectSingleNode("//div[@class=\"card-body\"]/div[@class=\"card-text\"]/div[@class=\"playlist-changes\"]");
+            // cardBody.InnerText = "ul/li list";
+
+            //emailTemplate.DocumentElement.InnerXml
+
+            //var playlistHeader = new XmlDocument();
+            // var playlistHeaderRoot = playlistHeader.DocumentElement;
+            //
+            // elem.InnerText="19.95";
+            // playlistHeader.DocumentElement.InsertAfter(elem, playlistHeaderRoot.FirstChild);
+            //var playlistHeader = "";
+
+
+
+
+
+            //XmlNode root = emailTemplate.DocumentElement;
+            // root.ChildNodes[2].ChildNodes[0].InnerText = "foobar";
+            // var emailContent = root.InnerXml;
+            //
+            // var cardHeader = doc.CreateElement("div");
+            //cardHeader.Attributes("class", "card-header");
+            //<div class=\"card-header\"><h2>{playlistTitle}</h2><h6 class=\"card-subtitle mb-2 text-muted\">by {playlistAuthor}</h6></div>";
+
+
+
+        // }
         // [Fact]
         // public async Task LogicFunctionalTest() {
         //     var config = new LambdaConfig(new LambdaDictionarySource(new List<KeyValuePair<string, string>> {

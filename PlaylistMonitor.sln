@@ -2,13 +2,13 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlaylistMonitor", "PlaylistMonitor\PlaylistMonitor.csproj", "{FF9639F3-3D77-4F7F-8AB9-9D9A24C4709B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlaylistMonitorTests", "PlaylistMonitorTests\PlaylistMonitorTests.csproj", "{D26B114F-C6AD-4C99-9635-C88F0D7D76FF}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlaylistCompare", "PlaylistCompare\PlaylistCompare.csproj", "{93CB9B97-29D7-4E57-9CDB-1FA92581AEBD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlaylistCompareTests", "PlaylistCompareTests\PlaylistCompareTests.csproj", "{61F415E8-0ABF-4B89-A481-CFFCA44B564C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlaylistCompare.Tests", "PlaylistCompare.Tests\PlaylistCompare.Tests.csproj", "{61F415E8-0ABF-4B89-A481-CFFCA44B564C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlaylistMonitor.Library", "PlaylistMonitor.Library\PlaylistMonitor.Library.csproj", "{652C1C22-3A27-4414-B522-993792B6C634}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlaylistMonitor.Tests", "PlaylistMonitor.Tests\PlaylistMonitor.Tests.csproj", "{3FE928AC-0706-4DE8-9BAB-3D518E54FC37}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,10 +20,6 @@ Global
 		{FF9639F3-3D77-4F7F-8AB9-9D9A24C4709B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF9639F3-3D77-4F7F-8AB9-9D9A24C4709B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FF9639F3-3D77-4F7F-8AB9-9D9A24C4709B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D26B114F-C6AD-4C99-9635-C88F0D7D76FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D26B114F-C6AD-4C99-9635-C88F0D7D76FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D26B114F-C6AD-4C99-9635-C88F0D7D76FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D26B114F-C6AD-4C99-9635-C88F0D7D76FF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{93CB9B97-29D7-4E57-9CDB-1FA92581AEBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{93CB9B97-29D7-4E57-9CDB-1FA92581AEBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{93CB9B97-29D7-4E57-9CDB-1FA92581AEBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -36,5 +32,9 @@ Global
 		{652C1C22-3A27-4414-B522-993792B6C634}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{652C1C22-3A27-4414-B522-993792B6C634}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{652C1C22-3A27-4414-B522-993792B6C634}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FE928AC-0706-4DE8-9BAB-3D518E54FC37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FE928AC-0706-4DE8-9BAB-3D518E54FC37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FE928AC-0706-4DE8-9BAB-3D518E54FC37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FE928AC-0706-4DE8-9BAB-3D518E54FC37}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

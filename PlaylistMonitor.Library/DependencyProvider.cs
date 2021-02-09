@@ -10,9 +10,9 @@ using Amazon.SimpleEmailV2.Model;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
 using Newtonsoft.Json;
-using Smylee.YouTube.PlaylistMonitor.Library.Models;
+using Smylee.PlaylistMonitor.Library.Models;
 
-namespace Smylee.YouTube.PlaylistMonitor.Library {
+namespace Smylee.PlaylistMonitor.Library {
 
     public interface IDependencyProvider {
         Task<GetItemResponse> DynamoDbGetCacheChannelAsync(string channelId, string playlistTitle);

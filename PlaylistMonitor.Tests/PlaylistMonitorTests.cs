@@ -3,20 +3,37 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2.Model;
 using Amazon.SimpleNotificationService.Model;
-using LambdaSharp.Logger;
-using Moq;
+using LambdaSharp.Logging;
+using LambdaSharp.Records;
 using Newtonsoft.Json;
 using Smylee.PlaylistMonitor.PlaylistMonitor;
-using Smylee.YouTube.PlaylistMonitor.Library.Models;
 using Xunit;
 
-namespace Smylee.PlaylistMonitor.PlaylistMonitorTests {
+namespace Smylee.PlaylistMonitor.PlaylistMonitor.Tests {
 
-    public class Logger : ILambdaLogLevelLogger {
-        public void Log(LambdaLogLevel level, Exception exception, string format, params object[] arguments) {}
+    public class Logger : ILambdaSharpLogger {
+        private ILambdaSharpInfo _info;
+        private bool _debugLoggingEnabled;
+
+        public void Log(LambdaLogLevel level, Exception exception, string format, params object[] arguments) {
+            throw new NotImplementedException();
+        }
+
+        public void LogRecord(ALambdaLogRecord record) {
+            throw new NotImplementedException();
+        }
+
+        public ILambdaSharpInfo Info => _info;
+
+        public bool DebugLoggingEnabled => _debugLoggingEnabled;
     }
     
-    public class Tests {
+    public class PlaylistMonitorTests {
+
+        [Fact]
+        public async Task LogicTest() {
+            Assert.True(true);
+        }
 
         // [Fact]
         // public async Task LogicTest() {
@@ -618,7 +635,7 @@ namespace Smylee.PlaylistMonitor.PlaylistMonitorTests {
         //             ChannelTitle = "foo-bar-channel-title-3"
         //         }
         //     };
-        //     var expected = $"<h3>{requestedPlaylistName}</h3><br /><br /><strong><a href=\"{deletedItems[0].Link}\">{deletedItems[0].Title}</a></strong><br />by {deletedItems[0].ChannelTitle}<br />{deletedItems[0].Description}<br /><br /><strong><a href=\"{deletedItems[1].Link}\">{deletedItems[1].Title}</a></strong><br />by {deletedItems[1].ChannelTitle}<br /><br />";
+        //     var expected = $"<h3>{requestedPlaylistName}</h3><br /><br /><strong><a href=\"{deletedItems[0].Link}\">{deletedItems[0].Title}</a></strong><br />by {deletedItems[0].ChannelTitle}<br />{PlaylistItemsSnippetDbdItems[0].Description}<br /><br /><strong><a href=\"{deletedItems[1].Link}\">{deletedItems[1].Title}</a></strong><br />by {deletedItems[1].ChannelTitle}<br /><br />";
         //     var provider = new Mock<IDepenedencyProvder>(MockBehavior.Strict);
         //     var logic = new Logic(provider.Object, new Logger());
         //     
