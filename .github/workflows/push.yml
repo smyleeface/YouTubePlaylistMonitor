@@ -9,7 +9,7 @@ jobs:
     steps:
       - name: Hello world action step
         id: hello
-        uses: YouTubePlaylistMonitor/sample-action@v1
+        uses: ./.github/actions/sample-action
         with:
           who-to-greet: 'Patty'
       # Use the output from the `hello` step
