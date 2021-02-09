@@ -12,7 +12,10 @@ jobs:
       - name: Hello world action step
         id: hello
 #        uses: ./.github/actions/sample-action
-        uses: docker://ghcr.io/smyleeface/sampleimage:latest
+        image: ghcr.io/smyleeface/sampleimage:latest
+        credentials:
+          username: smyleeface
+          password: ${{ secrets.CONTIANER_READONLY }}
         with:
           who-to-greet: 'Patty'
       # Use the output from the `hello` step
